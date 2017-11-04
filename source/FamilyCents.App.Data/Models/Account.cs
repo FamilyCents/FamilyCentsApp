@@ -13,8 +13,10 @@ namespace FamilyCents.App.Data.Models
 
     [JsonProperty("account_id")]
     public int AccountId { get; internal set; }
-    [JsonProperty("primary_customer_id")]
+    [JsonProperty("primary_user")]
     public int PrimaryCustomerId { get; internal set; }
+    [JsonProperty("primary_user_card_number")]
+    public string PrimaryUserCardNumber { get; internal set; }
     [JsonProperty("authorized_users")]
     public List<AuthorizedUser> AuthorizedUsers { get; internal set; }
     [JsonProperty("credit_limit")]
