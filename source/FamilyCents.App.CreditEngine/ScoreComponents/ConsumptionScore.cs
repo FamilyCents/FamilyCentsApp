@@ -6,9 +6,10 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 {
   /// <summary>
   /// Score based on how quickly credit limit increases are consumed
+  /// 10%
   /// </summary>
   public class ConsumptionScore : IScoreComponent
   {
-    public int Score { get => 0; }
+    public double Score { get => 0; }
   }
 }

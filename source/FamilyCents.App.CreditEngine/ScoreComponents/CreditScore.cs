@@ -4,8 +4,8 @@ using System.Text;
 
 namespace FamilyCents.App.CreditEngine.ScoreComponents
 {
-    public class CreditScore
-    {
+  public class CreditScore
+  {
 
 
 
@@ -16,8 +16,10 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
     public UtilizationScore Utilization { get; private set; }
 
 
-    public int Score { get => ConsumptionRate.Score + LargePurchases.Score + Lifespan.Score +
-                              Payments.Score + Utilization.Score;
+    public double Score
+    {
+      get => ConsumptionRate.Score + LargePurchases.Score + Lifespan.Score +
+             Payments.Score + Utilization.Score;
     }
 
 

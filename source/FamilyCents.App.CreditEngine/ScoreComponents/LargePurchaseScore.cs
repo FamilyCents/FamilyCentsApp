@@ -6,9 +6,10 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 {
   /// <summary>
   /// Score based on specific purchases and their 
+  /// 10%
   /// </summary>
   public class LargePurchaseScore : IScoreComponent
   {
-    public int Score { get => 0; }
+    public double Score { get => 0; }
   }
 }

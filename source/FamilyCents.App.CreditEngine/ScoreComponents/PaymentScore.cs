@@ -6,9 +6,10 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 {
   /// <summary>
   /// Score based on your payment history
+  /// 35%
   /// </summary>
   public class PaymentScore : IScoreComponent
   {
-    public int Score { get => 0; }
+    public double Score { get => 0; }
   }
 }

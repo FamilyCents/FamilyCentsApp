@@ -7,9 +7,10 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 
   /// <summary>
   /// Score based on the percentage of credit to debt utilized
+  /// 30%
   /// </summary>
   public class UtilizationScore : IScoreComponent
   {
-    public int Score { get => 0; }
+    public double Score { get => 0; }
   }
 }

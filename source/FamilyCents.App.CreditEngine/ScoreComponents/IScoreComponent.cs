@@ -6,6 +6,6 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 {
   public interface IScoreComponent
   {
-    int Score { get; }
+    double Score { get; }
   }
 }

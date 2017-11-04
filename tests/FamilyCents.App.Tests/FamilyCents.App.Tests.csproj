@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\source\FamilyCents.App.CreditEngine\FamilyCents.App.CreditEngine.csproj" />
     <ProjectReference Include="..\..\source\FamilyCents.App.Data\FamilyCents.App.Data.csproj" />
   </ItemGroup>
 
