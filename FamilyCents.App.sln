@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyCents.App.Data", "source\FamilyCents.App.Data\FamilyCents.App.Data.csproj", "{82D814C7-5EA5-4062-AA70-8D3BA8E62AE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyCents.App.Tests", "tests\FamilyCents.App.Tests\FamilyCents.App.Tests.csproj", "{418AA890-F08D-4A90-A2FA-FCCD42A9369E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCents.App.ApiTestConsole", "source\FamilyCents.App.ApiTestConsole\FamilyCents.App.ApiTestConsole.csproj", "{F1B0AC7C-9473-49BE-AB56-68CC8AD23D2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{418AA890-F08D-4A90-A2FA-FCCD42A9369E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{418AA890-F08D-4A90-A2FA-FCCD42A9369E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{418AA890-F08D-4A90-A2FA-FCCD42A9369E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1B0AC7C-9473-49BE-AB56-68CC8AD23D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B0AC7C-9473-49BE-AB56-68CC8AD23D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1B0AC7C-9473-49BE-AB56-68CC8AD23D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1B0AC7C-9473-49BE-AB56-68CC8AD23D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

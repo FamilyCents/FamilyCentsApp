@@ -12,9 +12,9 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("Date_to")]
     public DateTimeOffset? DateTo { get; set; }
     [JsonProperty("min_amount")]
-    public int? MinAmount { get; set; }
+    public decimal? MinAmount { get; set; }
     [JsonProperty("max_amount")]
-    public int? MaxAmount { get; set; }
+    public decimal? MaxAmount { get; set; }
     [JsonProperty("card_number")]
     public string CardAmount { get; set; }
     [JsonProperty("account_id")]

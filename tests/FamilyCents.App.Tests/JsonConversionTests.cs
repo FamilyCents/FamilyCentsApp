@@ -14,7 +14,7 @@ namespace FamilyCents.App.Tests
   ""date"": 1509810667993
 }";
 
-      var deserialized = JsonConvert.DeserializeObject<CustomerApiResponse>(json);
+      var deserialized = JsonConvert.DeserializeObject<AccountCustomer>(json);
 
       Assert.Equal(DateTimeOffset.FromUnixTimeMilliseconds(1509810667993), deserialized.Date);
     }

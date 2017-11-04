@@ -7,6 +7,6 @@ namespace FamilyCents.App.Data
 {
   public interface IApi<TRequest,TResponse>
   {
-    Task<TResponse> MakeRequest(TRequest request);
+    Task<TResponse> MakeRequestAsync(TRequest request);
   }
 }
