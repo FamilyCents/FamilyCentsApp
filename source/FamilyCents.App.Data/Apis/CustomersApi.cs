@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCents.App.Data.Apis
 {
-  public sealed class CustomersApi : CapitalOneApi<CustomerApiRequest, ImmutableList<AccountCustomer>>
+  public sealed class CustomersApi : CapitalOneApi<CustomerApiRequest, ImmutableList<AccountCustomer>>, ICustomersApi
   {
     public CustomersApi() : base("au-hackathon/customers/")
     {

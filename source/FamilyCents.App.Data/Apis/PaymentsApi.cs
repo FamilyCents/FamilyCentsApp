@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCents.App.Data.Apis
 {
-  public sealed class PaymentsApi : CapitalOneApi<PaymentApiRequest, ImmutableList<AccountPayment>>
+  public sealed class PaymentsApi : CapitalOneApi<PaymentApiRequest, ImmutableList<AccountPayment>>, IPaymentsApi
   {
     public PaymentsApi() : base("au-hackathon/payments/")
     {

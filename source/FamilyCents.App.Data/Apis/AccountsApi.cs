@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCents.App.Data.Apis
 {
-  public sealed class AccountsApi : CapitalOneApi<AccountApiRequest, ImmutableList<Account>>
+  public sealed class AccountsApi : CapitalOneApi<AccountApiRequest, ImmutableList<Account>>, IAccountsApi
   {
     public AccountsApi() : base("au-hackathon/accounts/")
     {

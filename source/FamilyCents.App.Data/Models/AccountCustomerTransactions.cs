@@ -13,6 +13,6 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("account_id")]
     public int AccountId { get; internal set; }
     [JsonProperty("customers")]
-    public ImmutableList<AccountCustomerTransactions> CustomerTransactions { get; internal set; }
+    public ImmutableList<CustomerTransactions> CustomerTransactions { get; internal set; }
   }
 }

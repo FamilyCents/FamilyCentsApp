@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class Customer : ICustomerScoped
+  public sealed class Customer : ICustomerScoped, IEquatable<Customer>
   {
     [JsonConstructor]
     internal Customer() { }
@@ -30,5 +30,9 @@ namespace FamilyCents.App.Data.Models
     public string CardNumber { get; internal set; }
     [JsonProperty("country")]
     public string Country { get; internal set; }
+
+    public bool Equals(Customer other) => other != null && other.CustomerId == CustomerId;
+    public override int GetHashCode() => CustomerId.GetHashCode();
+    public override bool Equals(object obj) => obj is Customer customer && Equals(customer);
   }
 }

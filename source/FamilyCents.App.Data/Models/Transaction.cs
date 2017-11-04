@@ -25,6 +25,6 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("merchant_name")]
     public string MerchantName { get; internal set; }
     [JsonProperty("transaction_id")]
-    public decimal TransactionId { get; internal set; }
+    public int TransactionId { get; internal set; }
   }
 }

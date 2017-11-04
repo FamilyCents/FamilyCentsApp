@@ -1,7 +1,9 @@
-﻿using FamilyCents.App.Data.Apis;
+﻿using FamilyCents.App.Data;
+using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FamilyCents.App.ApiTestConsole
@@ -15,14 +17,29 @@ namespace FamilyCents.App.ApiTestConsole
 
     static async Task MainAsync(string[] args)
     {
-      using (var accountsApi = new CustomersApi())
+      using (var customersApi = new CustomersApi())
+      using (var transactionsApi = new TransactionsApi())
       {
-        var response = await accountsApi.MakeRequestAsync(new CustomerApiRequest
-        {
-          AccountId = 123200000
-        });
+        var response = await customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = 123200000 });
 
-        Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+        foreach (var customer in response.Single().Customers)
+        {
+          var accountTransactions = await transactionsApi.MakeRequestAsync(new TransactionApiRequest { CustomerId = customer.CustomerId });
+
+          var transactions =
+            accountTransactions
+            .Single().CustomerTransactions
+            .Single().Transactions;
+
+          var averageTransaction = transactions.Average(x => x.Amount);
+          var firstTransaction = transactions
+            .OrderBy(t => t.ToDateTimeOffset())
+            .First()
+            .ToDateTimeOffset().Date
+            .ToShortDateString();
+
+          Console.WriteLine($"{customer.FirstName} {customer.LastName} made {transactions.Count} transaction since {firstTransaction} averaging {averageTransaction:C}");
+        }
 
         Console.ReadLine();
       }
