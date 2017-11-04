@@ -19,7 +19,7 @@ namespace FamilyCents.App.Data.Models
         return null as DateTimeOffset?;
       }
 
-      return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(reader.Value));
+      return DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(reader.Value));
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -30,7 +30,7 @@ namespace FamilyCents.App.Data.Models
       }
       else
       {
-        writer.WriteRawValue(((DateTimeOffset)value).ToUnixTimeSeconds().ToString());
+        writer.WriteRawValue(((DateTimeOffset)value).ToUnixTimeMilliseconds().ToString());
       }
     }
   }

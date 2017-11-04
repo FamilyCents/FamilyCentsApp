@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class AccountRequest
+  public sealed class AccountApiRequest
   {
     [JsonProperty("account_id")]
     public int AccountId { get; set; }
