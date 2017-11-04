@@ -8,7 +8,7 @@ namespace FamilyCents.App.Data.Models
   public sealed class CustomerApiRequest
   {
     [JsonProperty("account_id")]
-    public int AccountId { get; set; }
+    public int? AccountId { get; set; }
     [JsonProperty("Date_to")]
     public DateTimeOffset? DateTo { get; set; }
     [JsonProperty("min_amount")]
@@ -18,7 +18,7 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("card_number")]
     public string CardNumber { get; set; }
     [JsonProperty("customer_id")]
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
     [JsonProperty("merchant_name")]
     public string MerchantName { get; set; }
     [JsonProperty("card_type")]

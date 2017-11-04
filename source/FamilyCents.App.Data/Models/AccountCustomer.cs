@@ -1,18 +1,19 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class PaymentApiResponse
+  public sealed class AccountCustomer : IAccountScoped
   {
     [JsonConstructor]
-    internal PaymentApiResponse() { }
+    internal AccountCustomer() { }
 
     [JsonProperty("account_id")]
     public int AccountId { get; internal set; }
-    [JsonProperty("payment")]
-    public Payment Payment { get; internal set; }
+    [JsonProperty("customers")]
+    public ImmutableList<Customer> Customers { get; internal set; }
   }
 }
