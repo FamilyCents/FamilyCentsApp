@@ -10,8 +10,8 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("account_id")]
     public int AccountId { get; set; }
     [JsonProperty("month_year_from"), JsonConverter(typeof(EpochDateConverter))]
-    public DateTimeOffset From { get; set; }
+    public string FromMonth { get; set; }
     [JsonProperty("month_year_to"), JsonConverter(typeof(EpochDateConverter))]
-    public DateTimeOffset To { get; set; }
+    public string ToMonth { get; set; }
   }
 }

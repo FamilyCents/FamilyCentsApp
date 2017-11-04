@@ -10,15 +10,15 @@ namespace FamilyCents.App.Data.Models
     [JsonConstructor]
     internal Payment() { }
 
-    [JsonProperty("total_balance")]
-    public int TotalBalance { get; internal set; }
-    [JsonProperty("total_balance_paid")]
-    public int TotalBalancePaid { get; internal set; }
-    [JsonProperty("total_balance_remaining")]
-    public int TotalBalanceRemaining { get; internal set; }
-    [JsonProperty("month")]
-    public string Month { get; internal set; }
+    [JsonProperty("total_monthly_balance")]
+    public decimal TotalMonthlyBalance { get; internal set; }
     [JsonProperty("year")]
     public int Year { get; internal set; }
+    [JsonProperty("total_balance_paid")]
+    public decimal TotalBalancePaid { get; internal set; }
+    [JsonProperty("total_balance_remaining")]
+    public decimal TotalBalanceRemaining { get; internal set; }
+    [JsonProperty("month")]
+    public string Month { get; internal set; }
   }
 }
