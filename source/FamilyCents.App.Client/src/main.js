@@ -4,6 +4,8 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import App from './App'
 import router from './router'
+import Vuetify from 'vuetify'
+Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -17,9 +19,8 @@ new Vue({
   components: { App }
 })
 
-// Import top level component
-import 'bootstrap/dist/css/bootstrap.css'
-import 'element-ui/lib/theme-default/index.css'
+// // Import top level component
+// import 'bootstrap/dist/css/bootstrap.css'
+import 'element-ui/lib/theme-chalk/index.css'
 import 'material-design-icons/iconfont/material-icons.css'
-import 'dripicons/webfont/webfont.css'
-import 'vue-directive-tooltip/css/index.css'
+import 'vuetify/dist/vuetify.min.css'

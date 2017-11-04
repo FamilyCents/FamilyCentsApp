@@ -44,21 +44,15 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar/dist/Avatar'
 export default {
   name: 'DashboardSidebar',
   mounted: function () {
-    $(document).ready(function ($) {
-      $('.main-sidebar > div').slimScroll({
-        width: '230px',
-        position: 'left',
-        size: '3px',
-        height: '95vh'
-      })
-    })
-  },
-  components: {
-    Avatar
+    //   $('.main-sidebar > div').slimScroll({
+    //     width: '230px',
+    //     position: 'left',
+    //     size: '3px',
+    //     height: '95vh'
+    //   })
   }
 }
 </script>

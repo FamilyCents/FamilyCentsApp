@@ -1,23 +1,22 @@
 <template>
-  <div class="home">
-    <app-header></app-header>
+  <v-container fluid class="home pa-0">
+     <!-- <app-header></app-header> -->
 
     <!-- Left side column. contains the sidebar -->
-    <app-sidebar></app-sidebar>
-    <div>Menu Bar</div>
+    <!-- <app-sidebar></app-sidebar> -->
 
     <!-- Content Wrapper. Contains page content -->
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
     <!-- /.content-wrapper -->
 
-    <app-footer></app-footer>
+    <!-- <app-footer></app-footer> -->
 
-    <control-sidebar></control-sidebar>
+    <!-- <control-sidebar></control-sidebar> -->
 
     
     <Parent v-if="user.isParent" />
     <Child v-else/>
-  </div>
+  </v-container>
 </template>
 
 <script>

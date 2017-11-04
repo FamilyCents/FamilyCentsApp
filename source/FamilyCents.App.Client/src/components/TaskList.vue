@@ -1,12 +1,15 @@
 <template>
   <div class="task-list">
     <!-- Main content -->
-    <section class="content">
-        <div class="box">
-            <div class="box-header with-border">
+    <section>
+        <div>
+            <!-- <div class="box-header with-border">
                 <h3 class="box-title">Tasks</h3>
+            </div> -->
+            <div headline>
+              Tasks
             </div>
-            <div class="box-body" style="min-height:400px;">
+            <div>
                 <ul>
                   <li v-for="(task, index) in taskList" :key="index">
                     <div> Task: {{task.description}}</div>
@@ -27,7 +30,7 @@ export default {
   name: 'TaskList',
   computed: {
     taskList() {
-      console.log(taskListSample);
+      // console.log(taskListSample);
       return taskListSample;
     }
   },
