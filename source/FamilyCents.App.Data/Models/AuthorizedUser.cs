@@ -5,13 +5,13 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class AuthorizedUser
+  public sealed class AuthorizedUser : ICustomerScoped
   {
     [JsonConstructor]
     internal AuthorizedUser() { }
 
     [JsonProperty("customer_id")]
-    public string CustomerId { get; internal set; }
+    public int CustomerId { get; internal set; }
     [JsonProperty("au_card_number")]
     public string CardNumber { get; internal set; }
   }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class Payment
+  public sealed class Payment : IMonthAccurateDate
   {
     [JsonConstructor]
     internal Payment() { }
@@ -19,6 +19,6 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty("total_balance_remaining")]
     public decimal TotalBalanceRemaining { get; internal set; }
     [JsonProperty("month")]
-    public string Month { get; internal set; }
+    public Month Month { get; internal set; }
   }
 }

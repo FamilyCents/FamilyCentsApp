@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class AccountPayment
+  public sealed class AccountPayment : IAccountScoped
   {
     [JsonConstructor]
     internal AccountPayment() { }

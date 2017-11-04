@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class Customer
+  public sealed class Customer : ICustomerScoped
   {
     [JsonConstructor]
     internal Customer() { }
