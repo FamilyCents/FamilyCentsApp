@@ -1,11 +1,22 @@
 <template>
   <div class="task-list">
-    <ul>
-      <li v-for="(task, index) in taskList" :key="index">
-        <div> Task: {{task.description}}</div>
-        <div> Reward: {{task.reward}}</div>        
-      </li>
-    </ul>
+    <!-- Main content -->
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Tasks</h3>
+            </div>
+            <div class="box-body" style="min-height:400px;">
+                <ul>
+                  <li v-for="(task, index) in taskList" :key="index">
+                    <div> Task: {{task.description}}</div>
+                    <div> Reward: {{task.reward}}</div>        
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
   </div>
 </template>
 

@@ -1,6 +1,20 @@
 <template>
   <div class="home">
+    <app-header></app-header>
+
+    <!-- Left side column. contains the sidebar -->
+    <app-sidebar></app-sidebar>
     <div>Menu Bar</div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <router-view></router-view>
+    <!-- /.content-wrapper -->
+
+    <app-footer></app-footer>
+
+    <control-sidebar></control-sidebar>
+
+    
     <Parent v-if="user.isParent" />
     <Child v-else/>
   </div>
@@ -9,10 +23,16 @@
 <script>
 import Parent from './Parent'
 import Child from './Child'
+import Sidebar from './partials/Sidebar.vue'
+import Header from './partials/Header.vue'
+import Footer from './partials/Footer.vue'
 
 export default {
   name: 'Home',
   components: {
+    'app-sidebar': Sidebar,
+    'app-header': Header,
+    'app-footer': Footer,
     Parent,
     Child
   },
