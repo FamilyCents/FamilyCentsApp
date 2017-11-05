@@ -82,19 +82,41 @@ namespace FamilyCents.App.Api.Services
           .ToList()
         let isAdmin = account.PrimaryCustomerId == customer.CustomerId
         let creditLimitChange = new CreditLimitChange(
-          (double)customerBalance.Balance, 
+          (double)customerBalance.Balance,
           (double)(creditLimit?.Previous ?? 0M),
           (double)(creditLimit?.Current ?? 0M),
           creditLimit?.WhenChanged ?? now)
         let consumptionScore = new ConsumptionScore(
-          creditLimitChange, 
+          creditLimitChange,
           (double)customerBalance.Balance)
         let largePurchaseSchore = new LargePurchaseScore(
-          customerTransactions.Transactions.Select(t => new CreditEngine.Transaction(t.ToDateTimeOffset(), (double)t.Amount)).ToList(), 
+          customerTransactions.Transactions
+            .Select(t => new CreditEngine.Transaction(t.ToDateTimeOffset(), (double)t.Amount))
+            .ToList(),
           (double)(creditLimit?.Current ?? 0M))
         let lifespanScore = new LifespanScore(
-          customerTransactions.Transactions.OrderBy(t => t.ToDateTimeOffset()).First().ToDateTimeOffset())
-        let paymentScore = new PaymentScore(isAdmin ? actualAccountPayments : new List<CreditEngine.Payment>()) // TODO
+          customerTransactions.Transactions
+            .OrderBy(t => t.ToDateTimeOffset())
+            .First()
+            .ToDateTimeOffset())
+        let tasksByMonth = customerCompletedTasks
+          .Where(t => t.WhenCompleted.Value.AddDays(90) > now)
+          .ToLookup(t => t.WhenCompleted.Value.ToNextMonth())
+        let virtualBills = customerTransactions.Transactions
+          .Where(t => t.ToDateTimeOffset().AddDays(90) > now)
+          .GroupBy(t => t.ToDateTimeOffset().ToNextMonth())
+          .Select(month =>
+          {
+            var monthlyTransactions = month.ToList();
+            var monthlyCompletedTasks = tasksByMonth[month.Key]?.ToList() ?? new List<FamilyTask>();
+
+            var transactionsTotal = monthlyTransactions.Sum(x => x.Amount);
+            var completedTotal = monthlyCompletedTasks.Sum(x => x.Value);
+
+            return new CreditEngine.Payment(month.Key, month.Key, (double)transactionsTotal,(double)(transactionsTotal-completedTotal), (double)completedTotal) ;
+          })
+          .ToList()
+        let paymentScore = new PaymentScore(isAdmin ? actualAccountPayments : virtualBills) // TODO
         let utilitzationScore = new UtilizationScore(
           (double)(creditLimit?.Current ?? 0M), 
           (double)customerBalance.Balance)

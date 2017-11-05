@@ -18,7 +18,9 @@ namespace FamilyCents.App.Data
       return new DateTimeOffset(date.Year, (int)date.Month, date.Day, 0, 0, 0, TimeSpan.Zero);
     }
 
-
-
+    public static DateTimeOffset ToNextMonth(this DateTimeOffset date)
+    {
+      return date.Date.AddMonths(1);
+    }
   }
 }
