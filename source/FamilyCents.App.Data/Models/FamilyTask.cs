@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class FamilyTask
+  public sealed class FamilyTask : IAffectsBalance
   {
     [JsonProperty]
     public int AccountId { get; internal set; }
@@ -23,5 +23,7 @@ namespace FamilyCents.App.Data.Models
     public DateTimeOffset? WhenCompleted { get; internal set; }
     [JsonProperty]
     public int? CompletedBy { get; internal set; }
+    [JsonIgnore]
+    decimal IAffectsBalance.Amount => -Value;
   }
 }

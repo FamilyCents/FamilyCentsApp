@@ -3,7 +3,7 @@ using System;
 
 namespace FamilyCents.App.Data.Models
 {
-  public sealed class Transaction : IDayAccurateDate
+  public sealed class Transaction : IDayAccurateDate, IAffectsBalance
   {
     [JsonConstructor]
     internal Transaction() { }
