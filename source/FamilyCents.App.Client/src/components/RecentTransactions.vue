@@ -1,26 +1,11 @@
 <template>
   <div class="task-list">
-    <v-container class="pa-1">
+    <v-container>
       <v-list two-line subheader>
         <template v-for="(task, index) in taskList" >
           <v-list-tile :key="index">
-            <v-list-tile-action>
-              <v-checkbox 
-              v-model="task.completedBy"
-              @click="completeTask(task.id)"
-              ></v-checkbox>
-              <v-checkbox 
-              v-model="task.approvedBy"
-              @click="approveTask(task.id)"
-              v-if="isParent"></v-checkbox>
-            </v-list-tile-action>
-            <v-spacer></v-spacer>
             <v-list-tile-content>
-              <v-list-tile-title>{{task.description}}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-spacer></v-spacer>
-            <v-list-tile-content>
-              <v-list-tile-title class="green--text text--darken-4">${{task.value}}</v-list-tile-title>
+              <v-list-tile-title>{{task.description}} - ${{task.value}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider v-if="index + 1 < taskList.length" :key="index"></v-divider>
@@ -59,7 +44,7 @@
 
 
 export default {
-  name: 'TaskList',
+  name: 'RecentTransactions',
   data() {
     return {
       addNewDialog: false,
@@ -69,11 +54,13 @@ export default {
   },
   computed: {
     taskList() {
+      console.log(`task list: ${this.$store.getters.tasks}`);
       return this.$store.getters.tasks.filter(t => !(t.approvedBy && t.completedBy));
     },
     isParent: function(){
       let currentUser = this.$store.getters.currentUser;      
       if(currentUser){
+        console.log(`Is Parent called: ${this.$store.getters.currentUser.isPrimary}`);
         return this.$store.getters.currentUser.isPrimary;
       }
       return false;
@@ -81,9 +68,12 @@ export default {
   },
   methods: {
     completeTask(taskId){
+      // let taskId = event.target.value;
+      console.log(`TaskId: `+taskId);
       this.$store.dispatch('completeTask', taskId);
     },
     approveTask(taskId){
+      console.log(`TaskId: `+taskId);
       this.$store.dispatch('approveTask', taskId);
     },
     createTask(){
