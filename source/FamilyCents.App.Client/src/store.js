@@ -100,11 +100,30 @@ export const store = new Vuex.Store({
     },
     loadTasksPromise(context) {
       let url = `${apiUrl}/tasks/${context.getters.accountId}`;
-      console.log(`LoadTasks url: ${url}`);
       fetch(url)
       .then(res => res.json())
       .then(tasks => {
           for (let task of tasks) context.commit('updateFamilyTask', task);
+      });
+    },
+    getUserPromise(context, userId){
+      let url = `${apiUrl}/family/${context.getters.accountId}/user/${userId}`;
+      return fetch(url)
+      .then(res => res.json());
+    },
+    updateUser(context, [userId, minMaxObj]){
+      let url = `${apiUrl}/family/${context.getters.accountId}/user/${userId}`;
+      console.log(`updated user ${url}`);
+      fetch(url, 
+        {
+          method: "PUT",
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(minMaxObj)
+      })
+      .then(res => {
+          context.dispatch('reloadFamily');
       });
     },
     approveTask(context, taskId){

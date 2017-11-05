@@ -9,6 +9,10 @@ import { store } from './store'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0f1552b7ad0a5f9c04ba2e2db3e0ee2084125dea
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,6 +25,6 @@ new Vue({
 
 // // Import top level component
 // import 'bootstrap/dist/css/bootstrap.css'
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 import 'material-design-icons/iconfont/material-icons.css'
 import 'vuetify/dist/vuetify.min.css'

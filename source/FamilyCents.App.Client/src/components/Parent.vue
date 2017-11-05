@@ -1,80 +1,67 @@
 <template>
   <div class="parent">
-      <div>
-        <v-layout row wrap>
-            <v-flex
-              xs4
-              v-for="(child, index) in children"
-              :key="index"
-            >
-              <v-card >
-                <router-link :to="`/account/${child.customerId}`" >{{child.name}}</router-link>:
-                <p>Balance: {{child.virtualBalance}}</p>
-                <p>Credit Remaining: {{creditRemaining(child)}}</p>
-                <p>Credit Score: {{child.virtualCreditScore}}</p>
-              </v-card>
-            </v-flex>
-          </v-layout>
+    <div>
+      <!-- <v-text class="display-2">Family Overview</v-text> -->
+      <v-layout row wrap justify-space-around class="pa-2">
+          <!-- <v-flex xs12>
+            <AccountOverview :user="parent"></AccountOverview>
+          </v-flex> -->
+          
+          <v-flex
+            xs6 sm4 md3
+            v-for="(child, index) in children"
+            :key="index"
+            class="pa-2"
+          >
+          <v-card :href="`#/account/${child.customerId}`" :color="colorFromCreditScore(child.virtualCreditScore)" class="pa-1" router>
+            <v-layout row wrap align-center>
+              <v-flex class="text-xs-center pb-2">
+                <v-avatar size="65%" align-center>
+                  <img :src="`https://randomuser.me/api/portraits/${child.customerId%13%2 ? 'women' : 'men'}/${child.customerId%13}.jpg`" alt="avatar">
+                </v-avatar>
+                <p>{{child.name}}</p>
+              </v-flex>
+            </v-layout>
+            <v-card class="grey lighten-4">
+              <v-card-text class="subheading">Balance: {{child.virtualBalance}}</v-card-text>
+              <v-card-text class="subheading pt-0">Credit Remaining: {{creditRemaining(child)}}</v-card-text>
+              <v-card-text class="subheading pt-0">Credit Score: {{child.virtualCreditScore}}</v-card-text>
+            </v-card>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </div>
-    <TaskList></TaskList>
-    
-    <v-btn
-      color="green"
-      dark
-      fixed
-      right
-      bottom
-      fab
-      @click.native.stop="addNewDialog = true"
-    >
-      <v-icon>add</v-icon>
-    </v-btn>
-    <v-dialog absolute v-model="addNewDialog">
-      <v-card>
-        <v-card-text>
-          <v-text-field label="Task Description" v-model="newTaskDescription"></v-text-field>
-          <v-text-field label="Reward" type="number" v-model="newTaskValue"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click.native="createTask">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import TaskList from './TaskList'
+import AccountOverview from './AccountOverview';
+
 export default {
   name: 'Parent',
-  data() {
-    return {
-      addNewDialog: false,
-      newTaskDescription: "",
-      newTaskValue: 0
-    }
-  },
   components: {
-    TaskList
+    TaskList,
+    AccountOverview
   },
   computed: {
+    parent() {
+      return this.$store.getters.family.filter(m => m.IsPrimary)[0];
+    },
     children() {
       return this.$store.getters.family.filter(m => !m.IsPrimary);
     }
   },
   methods: {
     creditRemaining(user){
-      return user.virtualCreditLimit - user.virtualBalance;
+      return Math.round((user.maxCreditLimit - user.virtualBalance)*100 )/100;
     },
-    createTask(){
-      this.$store.dispatch('createFamilyTask', {
-          description: this.newTaskDescription,
-          value: this.newTaskValue
-        });
-      this.addNewDialog = false;
-      this.newTaskDescription = "";
-      this.newTaskValue = 0;
+    colorFromCreditScore(creditScore){
+      if(creditScore < 500)
+        return "red";
+      if(creditScore > 650)
+        return "green";
+      return "yellow";
     }
   }
 }

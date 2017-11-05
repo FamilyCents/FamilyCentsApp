@@ -8,17 +8,23 @@ import AccountAdmin from '@/components/AccountAdmin'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  mode:'hash',
   routes: [
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      query: { isChild: 'false' }
     },
     {
       path: '/account/:id',
       name: 'AccountAdmin',
       component: AccountAdmin
+    },
+    {
+      path: '/tasks',
+      name: 'TaskList',
+      component: TaskList
     }
   ]
 })
