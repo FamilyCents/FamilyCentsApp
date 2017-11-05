@@ -17,7 +17,7 @@
             <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile href="/tasks" router>
+        <v-list-tile href="#/tasks" router>
           <v-list-tile-action>
             <v-icon>list</v-icon>
           </v-list-tile-action>
@@ -55,7 +55,7 @@ export default {
       drawer: false
   }),
   beforeCreate(){
-    this.$store.dispatch('initializeFamily', [123200000, 123210000]);
+    this.$store.dispatch('initializeFamily', [152300000, 152310000]);
   },
   created() {
     setInterval(

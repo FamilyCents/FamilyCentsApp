@@ -7,7 +7,7 @@
             <v-layout>
               <v-flex row>
                 <v-avatar size="80px">
-                  <img :src="`https://randomuser.me/api/portraits/men/${user.customerId%13}.jpg`" alt="avatar">
+                  <img :src="`https://randomuser.me/api/portraits/${user.customerId%13%2 ? 'women' : 'men'}/${user.customerId%13}.jpg`" alt="avatar">
                 </v-avatar>
               </v-flex>
               <v-flex>
