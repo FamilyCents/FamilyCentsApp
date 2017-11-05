@@ -272,5 +272,50 @@ namespace FamilyCents.App.Tests
 
 
     #endregion
+
+    #region Consumption
+
+    [Fact]
+    public void CalculateConsumption_Failed()
+    {
+
+      var consumption = new ConsumptionScore(new CreditEngine.CreditLimitChange(12000, 25000, 30000, DateTimeOffset.UtcNow.AddDays(-19)), 16000 );
+
+      var score = consumption.Score;
+
+      Assert.Equal(500, score);
+    }
+
+    [Fact]
+    public void CalculateConsumption_Success()
+    {
+
+      var consumption = new ConsumptionScore(new CreditEngine.CreditLimitChange(12000, 25000, 30000, DateTimeOffset.UtcNow.AddDays(-19)), 14000);
+
+      var score = consumption.Score;
+
+      Assert.Equal(1000, score);
+    }
+
+    [Fact]
+    public void CalculateConsumption_SuccessTimePassed()
+    {
+
+      var consumption = new ConsumptionScore(new CreditEngine.CreditLimitChange(12000, 25000, 30000, DateTimeOffset.UtcNow.AddDays(-31)), 16000);
+
+      var score = consumption.Score;
+
+      Assert.Equal(1000, score);
+    }
+
+    #endregion
+
+
+    #region Payments
+    #endregion
+
+    #region LargePurchase
+    #endregion
+
   }
 }
