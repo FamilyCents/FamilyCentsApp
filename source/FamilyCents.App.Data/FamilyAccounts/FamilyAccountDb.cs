@@ -29,7 +29,12 @@ namespace FamilyCents.App.Data.FamilyAccounts
       var familyTasks = await fetchFamilyTasks;
 
       var purchases = accountTransactions.Single().CustomerTransactions.Single().Transactions.Cast<IAffectsBalance>();
-      var payments = familyTasks.Where(task => task.CompletedBy != null && task.CompletedBy == customerId).Cast<IAffectsBalance>();
+      var payments = familyTasks
+        .Where(task => 
+          task.CompletedBy != null && 
+          task.CompletedBy == customerId && 
+          task.ApprovedBy != null)
+        .Cast<IAffectsBalance>();
 
       return new CustomerBalance
       {
