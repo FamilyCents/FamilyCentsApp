@@ -5,30 +5,24 @@
         <div>
         <v-list two-line subheader>
           <v-subheader>Tasks</v-subheader>
-          <v-list-tile avatar>
+          <v-list-tile v-for="(task, index) in taskList" :key="index">
             <v-list-tile-action>
-              <v-checkbox v-model="notifications"></v-checkbox>
+              <v-checkbox 
+              v-model="task.completedBy"
+              @click="completeTask(task.id)"
+              ></v-checkbox>
+              <v-checkbox 
+              v-model="task.approvedBy"
+              @click="approveTask(task.id)"
+              v-if="isParent"></v-checkbox>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>Notifications</v-list-tile-title>
-              <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
+              <v-list-tile-title>{{task.description}} - ${{task.value}}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-            <div headline>
-              Tasks
-            </div>
-            <div>
-                <ul>
-                  <li v-for="(task, index) in taskList" :key="index">
-                    <div> Task: {{task.description}}</div>
-                    <div> Reward: {{task.reward}}</div>        
-                  </li>
-                </ul>
-            </div>
         </div>
     </section>
-    <!-- /.content -->
   </div>
 </template>
 
@@ -37,50 +31,32 @@
 
 export default {
   name: 'TaskList',
-  data() {
-    return {
-      taskList: taskListSample
-    }
-  },
   computed: {
     taskList() {
-      // console.log(taskListSample);
-      return taskListSample;
+      console.log(`task list: ${this.$store.getters.tasks}`);
+      return this.$store.getters.tasks.filter(t => !(t.approvedBy && t.completedBy));
+    },
+    isParent: function(){
+      let currentUser = this.$store.getters.currentUser;      
+      if(currentUser){
+        console.log(`Is Parent called: ${this.$store.getters.currentUser.isPrimary}`);
+        return this.$store.getters.currentUser.isPrimary;
+      }
+      return false;
     }
   },
-  created(){
-    // this.$store.dispatch('connectRoom', 'sample');
+  methods: {
+    completeTask(taskId){
+      // let taskId = event.target.value;
+      console.log(`TaskId: `+taskId);
+      this.$store.dispatch('completeTask', taskId);
+    },
+    approveTask(taskId){
+      console.log(`TaskId: `+taskId);
+      this.$store.dispatch('approveTask', taskId);
+    }
   }
 };
-
-const taskListSample = [
-  {
-    id: 0,
-    description: "This is a task",
-    reward: 5
-  },
-  {
-    id: 0,
-    description: "This is a task",
-    reward: 5
-  },
-  {
-    id: 1,
-    description: "This is a task",
-    reward: 5
-  },
-  {
-    id: 2,
-    description: "This is a task",
-    reward: 5
-  },
-  {
-    id: 3,
-    description: "This is a task",
-    reward: 5
-  }
-]
-
 
 </script>
 
