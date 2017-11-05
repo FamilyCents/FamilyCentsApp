@@ -1,22 +1,8 @@
 <template>
-  <v-container fluid class="home pa-0">
-     <!-- <app-header></app-header> -->
-
-    <!-- Left side column. contains the sidebar -->
-    <!-- <app-sidebar></app-sidebar> -->
-
-    <!-- Content Wrapper. Contains page content -->
-    <!-- <router-view></router-view> -->
-    <!-- /.content-wrapper -->
-
-    <!-- <app-footer></app-footer> -->
-
-    <!-- <control-sidebar></control-sidebar> -->
-
-    
+  <v-container fluid class="home pa-0">    
     <Parent v-if="isParent && !isLoading" />
-    <Child v-else-if="!isParent && !isLoading" />
-    <div v-else>Loading...</div>
+    <Child v-else-if="!isParent && !isLoading" :user="currentUser"/>
+    <v-progress-linear v-bind:indeterminate="true" v-else></v-progress-linear>
   </v-container>
 </template>
 
@@ -37,23 +23,19 @@ export default {
     Child
   },
   computed: {
+    currentUser: function(){
+      return this.$store.getters.currentUser;
+    },
     isParent: function(){
-      let currentUser = this.$store.getters.currentUser;
-      console.log(`Is Parent called 1: ${this.$store.getters.currentUser}`);
-      
+      let currentUser = this.$store.getters.currentUser;      
       if(currentUser){
-        console.log(`Is Parent called: ${this.$store.getters.currentUser.isPrimary}`);
         return this.$store.getters.currentUser.isPrimary;
       }
       return false;
     },
     isLoading: function(){
-      console.log( `Loading: ${this.$store.getters.isLoading}`);
       return this.$store.getters.isLoading;
     }
-  },
-  beforeCreate(){
-    this.$store.dispatch('initializeFamily', [123200000, 123210000]);
   }
 }
 </script>

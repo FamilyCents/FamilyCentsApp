@@ -19,6 +19,11 @@ export default new Router({
       path: '/account/:id',
       name: 'AccountAdmin',
       component: AccountAdmin
+    },
+    {
+      path: '/tasks',
+      name: 'TaskList',
+      component: TaskList
     }
   ]
 })
