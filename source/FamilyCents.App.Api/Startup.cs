@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.FamilyTasks;
 using FamilyCents.App.Data.FamilyAccounts;
+using FamilyCents.App.Api.Services;
 
 namespace FamilyCents.App.Api
 {
@@ -30,7 +31,8 @@ namespace FamilyCents.App.Api
         .AddSingleton<ITransactionsApi, TransactionsApi>()
         .AddSingleton<ICustomersApi, CustomersApi>()
         .AddSingleton<IFamilyTaskDb, CosmosDbTaskDb>()
-        .AddSingleton<IFamilyAccountDb, FamilyAccountDb>();
+        .AddSingleton<IFamilyAccountDb, FamilyAccountDb>()
+        .AddSingleton<IFamilyListService, FamilyListService>();
 
       services.AddCors();
 

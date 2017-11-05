@@ -9,75 +9,39 @@ using FamilyCents.App.Api.Models;
 using FamilyCents.App.Data;
 using FamilyCents.App.Data.FamilyTasks;
 using FamilyCents.App.Data.FamilyAccounts;
+using FamilyCents.App.Api.Services;
 
 namespace FamilyCents.App.Api.Controllers
 {
   public class FamilyController : Controller
   {
-    private readonly ICustomersApi _customersApi;
-    private readonly IAccountsApi _accountsApi;
-    private readonly ITransactionsApi _transactionsApi;
-    private readonly IFamilyTaskDb _familyTaskDb;
-    private readonly IFamilyAccountDb _accountDb;
+    private readonly IFamilyListService _familyListService;
 
-    public FamilyController(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyTaskDb familyTaskDb, IFamilyAccountDb accountDb)
+    public FamilyController(IFamilyListService familyListService)
     {
-      _customersApi = customersApi;
-      _accountsApi = accountsApi;
-      _transactionsApi = transactionsApi;
-      _familyTaskDb = familyTaskDb;
-      _accountDb = accountDb;
+      _familyListService = familyListService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Default(int accountId)
     {
-      var fetchAccountDetails = _accountsApi.MakeRequestAsync(new AccountApiRequest { AccountId = accountId });
-      var fetchAccountCustomers = _customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = accountId });
-      var fetchAccountTransactions = _transactionsApi.MakeRequestAsync(new TransactionApiRequest { AccountId = accountId });
+      return Json(await _familyListService.ListFamilyMembers(accountId));
+    }
 
-      var accountCustomers = (await fetchAccountCustomers).First().Customers;
-      var fetchBalances = Task.WhenAll(accountCustomers.Select(customer => _accountDb.GetBalance(accountId, customer.CustomerId)));
+    [ActionName("User")] // Because Controller.User is already a thing
+    [HttpGet("/api/[controller]/{accountId:int}/[action]/{customerId:int}")]
+    public async Task<IActionResult> GetUser(int accountId, int customerId)
+    {
+      var allFamilyMembers = await _familyListService.ListFamilyMembers(accountId);
 
-      var accountDetails = await fetchAccountDetails;
-      var accountTransactions = (await fetchAccountTransactions).First().CustomerTransactions;
-      var balances = await fetchBalances;
+      var thisFamilyMember = allFamilyMembers.FirstOrDefault(f => f.CustomerId == customerId);
 
-      var account = accountDetails.Single();
+      if (thisFamilyMember == null)
+      {
+        return NotFound();
+      }
 
-      var rnd = new Random();
-
-      var familyMembers =
-        from customer in accountCustomers
-        join customerTransactions in accountTransactions
-        on customer.CustomerId equals customerTransactions.CustomerId
-        join customerBalance in balances
-        on customer.CustomerId equals customerBalance.CustomerId
-        let transactions = customerTransactions.Transactions
-          .OrderByDescending(t => t.ToDateTimeOffset())
-          .Take(5)
-          .Select(t => new RecentTransaction
-          {
-            Merchant = t.MerchantName,
-            Value = t.Amount,
-            When = t.ToDateTimeOffset().Date.ToShortDateString()
-          })
-          .ToList()
-        let creditLimit = rnd.Next(30, 100)
-        let balance = rnd.Next(0, creditLimit)
-        let creditScore = rnd.Next(300, 850)
-        select new FamilyMember
-        {
-          CustomerId = customer.CustomerId,
-          IsPrimary = account.PrimaryCustomerId == customer.CustomerId,
-          Name = $"{customer.FirstName} {customer.LastName}",
-          RecentTransactions = transactions,
-          VirtualBalance = customerBalance.Balance,
-          VirtualCreditLimit = Convert.ToDecimal(creditLimit),
-          VirtualCreditScore = creditScore,
-        };
-
-      return Json(familyMembers.ToList());
+      return Json(thisFamilyMember);
     }
   }
 }
