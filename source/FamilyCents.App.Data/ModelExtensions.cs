@@ -10,7 +10,7 @@ namespace FamilyCents.App.Data
   {
     public static DateTimeOffset ToDateTimeOffset(this IMonthAccurateDate date)
     {
-      return new DateTimeOffset(date.Year, (int)date.Month, 0, 0, 0, 0, TimeSpan.Zero);
+      return new DateTimeOffset(date.Year, (int)date.Month, 1, 0, 0, 0, TimeSpan.Zero);
     }
 
     public static DateTimeOffset ToDateTimeOffset(this IDayAccurateDate date)
