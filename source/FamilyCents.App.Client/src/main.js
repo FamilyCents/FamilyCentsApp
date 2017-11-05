@@ -9,11 +9,6 @@ import { store } from './store'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
-<<<<<<< HEAD
-=======
-
->>>>>>> 0f1552b7ad0a5f9c04ba2e2db3e0ee2084125dea
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
