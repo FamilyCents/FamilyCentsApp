@@ -56,7 +56,7 @@ export const store = new Vuex.Store({
           ...taskIn
         }
 
-        newTasks.push(newTasks);
+        newTasks.push(newTask);
         state.tasks = newTasks;
       }
       else
@@ -75,21 +75,25 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    reloadFamily(context){
+      context.dispatch('loadFamily',[context.getters.accountId, context.getters.currentUser.customerId]);
+    },
+    initializeFamily(context, [accountId, userId]){
+      context.commit('loading', true);
+      context.dispatch('loadFamily',[accountId, userId]).then(()=>{
+        context.commit('loading', false);
+      });
+    },
     loadFamily(context, [accountId, userId]){
       context.commit('updateAccountId', accountId);
       let url = `${apiUrl}/family/${accountId}`;
-      console.log(`Load Family url: ${url}`)
-      context.commit('loading', true);
-      console.log(`loading with userid and acountId: ${userId} + ${accountId}`);
-      fetch(url)
+      return fetch(url)
       .then(res => res.json())
       .then(family => {
           for (let member of family) context.commit('updateFamilyMember', member);
           
           context.dispatch('loadTasksPromise').then(() => {
-            context.commit('loading', false);
             context.commit('updateCurrentUser', userId);
-            console.log("updated user and loading: "+userId + " + " + context.getters.isLoading);
           });
           
       });
@@ -103,18 +107,18 @@ export const store = new Vuex.Store({
           for (let task of tasks) context.commit('updateFamilyTask', task);
       });
     },
-    approveTask(context){
-      let currentUser = context.getters.currentUser.customerId;
+    approveTask(context, taskId){
+      let currentUser = context.getters.currentUser;
       if(currentUser.isPrimary){
-        context.dispatch('updateTask', task.id, {approvedBy: currentUser.customerId});
+        context.dispatch('updateTask', [taskId, {approvedBy: currentUser.customerId}]);
       }
     },
-    completeTask(context){
-      let currentUser = context.getters.currentUser.customerId;
-      context.dispatch('updateTask', task.id, {completedBy: currentUser.customerId});
+    completeTask(context, taskId){
+      let currentUserId = context.getters.currentUser.customerId;
+      context.dispatch('updateTask', [taskId, {completedBy: currentUserId}]);
     },
-    updateTask(context, taskId, updateTaskBody){
-      let url = `${apiUrl}/tasks/${accountId}/${taskId}`;
+    updateTask(context, [taskId, updateTaskBody]){
+      let url = `${apiUrl}/tasks/${context.getters.accountId}/task/${taskId}`;
       fetch(url, 
         {
           method: "PUT",
@@ -123,14 +127,13 @@ export const store = new Vuex.Store({
           },
           body: JSON.stringify(updateTaskBody)
       })
-      .then(res => res.json())
-      .then(task => {
-          context.dispatch('loadTasksPromise', task);
+      .then(res => {
+          context.dispatch('reloadFamily');
       });
     },
 
     createFamilyTask(context, taskIn){
-      let url = `${apiUrl}/tasks/${accountId}/task`;
+      let url = `${apiUrl}/tasks/${context.getters.accountId}/task`;
       fetch(url, 
         {
           method: "POST",
@@ -143,9 +146,8 @@ export const store = new Vuex.Store({
             value: taskIn.value
            })
       })
-      .then(res => res.json())
-      .then(task => {
-          context.dispatch('loadTasksPromise', task);
+      .then(res => {
+          context.dispatch('reloadFamily');
       });
     }
   }

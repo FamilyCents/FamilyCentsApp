@@ -53,10 +53,7 @@ export default {
     }
   },
   beforeCreate(){
-    this.$store.dispatch('loadFamily', [123200000, 123210000]);
-    
-    // // Hardcoded user set here. Pretend already authed
-    // this.$store.dispatch('updateCurrentUser', 123210000);
+    this.$store.dispatch('initializeFamily', [123200000, 123210000]);
   }
 }
 </script>

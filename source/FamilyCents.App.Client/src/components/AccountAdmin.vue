@@ -38,12 +38,8 @@ export default {
   },
   methods: {
     updateCreditRange: function(){
-      
+      this.$store.dispatch('updateUser');
     }
-  },
-  created() {
-    //TODO: fetch user from api
-
   }
 }
 </script>
