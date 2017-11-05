@@ -1,6 +1,6 @@
 ﻿using FamilyCents.App.Api.Models;
 using FamilyCents.App.Data.Apis;
-using FamilyCents.App.Data.FamilyTasks;
+using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,10 +12,10 @@ namespace FamilyCents.App.Api.Controllers
 {
   public class TasksController : Controller
   {
-    private readonly IFamilyTaskDb _tasksDb;
+    private readonly IFamilyDb _tasksDb;
     private readonly ICustomersApi _customersApi;
 
-    public TasksController(IFamilyTaskDb tasksDb, ICustomersApi customersApi)
+    public TasksController(IFamilyDb tasksDb, ICustomersApi customersApi)
     {
       _tasksDb = tasksDb;
       _customersApi = customersApi;

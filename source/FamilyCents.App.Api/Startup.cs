@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using FamilyCents.App.Data.Apis;
-using FamilyCents.App.Data.FamilyTasks;
+using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.FamilyAccounts;
 using FamilyCents.App.Api.Services;
 
@@ -30,7 +30,7 @@ namespace FamilyCents.App.Api
         .AddSingleton<IAccountsApi, AccountsApi>()
         .AddSingleton<ITransactionsApi, TransactionsApi>()
         .AddSingleton<ICustomersApi, CustomersApi>()
-        .AddSingleton<IFamilyTaskDb, CosmosDbTaskDb>()
+        .AddSingleton<IFamilyDb, AzureFamilyDatabase>()
         .AddSingleton<IFamilyAccountDb, FamilyAccountDb>()
         .AddSingleton<IFamilyListService, FamilyListService>();
 

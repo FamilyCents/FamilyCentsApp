@@ -1,6 +1,6 @@
 ﻿using FamilyCents.App.Data;
 using FamilyCents.App.Data.Apis;
-using FamilyCents.App.Data.FamilyTasks;
+using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.Models;
 using Newtonsoft.Json;
 using System;
@@ -21,7 +21,7 @@ namespace FamilyCents.App.ApiTestConsole
       using (var customersApi = new CustomersApi())
       using (var transactionsApi = new TransactionsApi())
       {
-        var taskApi = new CosmosDbTaskDb();
+        var taskApi = new AzureFamilyDatabase();
 
         await taskApi.CreateTask(123200000, 123230000, "Mow The Lawn", 5.00M);
 

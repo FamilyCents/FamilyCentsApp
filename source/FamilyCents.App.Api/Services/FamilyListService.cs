@@ -2,7 +2,7 @@
 using FamilyCents.App.Data;
 using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.FamilyAccounts;
-using FamilyCents.App.Data.FamilyTasks;
+using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -17,10 +17,10 @@ namespace FamilyCents.App.Api.Services
     private readonly ICustomersApi _customersApi;
     private readonly IAccountsApi _accountsApi;
     private readonly ITransactionsApi _transactionsApi;
-    private readonly IFamilyTaskDb _familyTaskDb;
+    private readonly IFamilyDb _familyTaskDb;
     private readonly IFamilyAccountDb _accountDb;
 
-    public FamilyListService(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyTaskDb familyTaskDb, IFamilyAccountDb accountDb)
+    public FamilyListService(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyDb familyTaskDb, IFamilyAccountDb accountDb)
     {
       _customersApi = customersApi;
       _accountsApi = accountsApi;
@@ -34,6 +34,7 @@ namespace FamilyCents.App.Api.Services
       var fetchAccountDetails = _accountsApi.MakeRequestAsync(new AccountApiRequest { AccountId = accountId });
       var fetchAccountCustomers = _customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = accountId });
       var fetchAccountTransactions = _transactionsApi.MakeRequestAsync(new TransactionApiRequest { AccountId = accountId });
+      var fetchCreditLimits = _familyTaskDb.GetAllFamilyMembersCredit(accountId);
 
       var accountCustomers = (await fetchAccountCustomers).First().Customers;
       var fetchBalances = Task.WhenAll(accountCustomers.Select(customer => _accountDb.GetBalance(accountId, customer.CustomerId)));
@@ -41,7 +42,7 @@ namespace FamilyCents.App.Api.Services
       var accountDetails = await fetchAccountDetails;
       var accountTransactions = (await fetchAccountTransactions).First().CustomerTransactions;
       var balances = await fetchBalances;
-
+      var creditLimits = await fetchCreditLimits;
       var account = accountDetails.Single();
 
       var rnd = new Random();
@@ -52,6 +53,10 @@ namespace FamilyCents.App.Api.Services
         on customer.CustomerId equals customerTransactions.CustomerId
         join customerBalance in balances
         on customer.CustomerId equals customerBalance.CustomerId
+        join creditLimit in creditLimits
+        on customer.CustomerId equals creditLimit.CustomerId
+        into customerCreditLimits
+        let creditLimit = customerCreditLimits.FirstOrDefault()
         let transactions = customerTransactions.Transactions
           .OrderByDescending(t => t.ToDateTimeOffset())
           .Take(5)
@@ -62,8 +67,6 @@ namespace FamilyCents.App.Api.Services
             When = t.ToDateTimeOffset().Date.ToShortDateString()
           })
           .ToList()
-        let creditLimit = rnd.Next(30, 100)
-        let balance = rnd.Next(0, creditLimit)
         let creditScore = rnd.Next(300, 850)
         select new FamilyMember
         {
@@ -72,7 +75,9 @@ namespace FamilyCents.App.Api.Services
           Name = $"{customer.FirstName} {customer.LastName}",
           RecentTransactions = transactions,
           VirtualBalance = customerBalance.Balance,
-          VirtualCreditLimit = Convert.ToDecimal(creditLimit),
+          VirtualCreditLimit = creditLimit?.Current,
+          MaxCreditLimit = creditLimit?.Max,
+          MinCreditLimit = creditLimit?.Min,
           VirtualCreditScore = creditScore,
         };
 

@@ -1,5 +1,5 @@
 ﻿using FamilyCents.App.Data.Apis;
-using FamilyCents.App.Data.FamilyTasks;
+using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ namespace FamilyCents.App.Data.FamilyAccounts
   public sealed class FamilyAccountDb : IFamilyAccountDb
   {
     private readonly ITransactionsApi _transactionsApi;
-    private readonly IFamilyTaskDb _familyTaskDb;
+    private readonly IFamilyDb _familyTaskDb;
 
-    public FamilyAccountDb(ITransactionsApi transactionsApi, IFamilyTaskDb familyTaskDb)
+    public FamilyAccountDb(ITransactionsApi transactionsApi, IFamilyDb familyTaskDb)
     {
       _transactionsApi = transactionsApi;
       _familyTaskDb = familyTaskDb;

@@ -8,13 +8,13 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using System.Linq;
 
-namespace FamilyCents.App.Data.FamilyTasks
+namespace FamilyCents.App.Data.Local
 {
-  public sealed class CosmosDbTaskDb : IFamilyTaskDb
+  public sealed class AzureFamilyDatabase : IFamilyDb
   {
     private readonly DocumentClient _db;
 
-    public CosmosDbTaskDb()
+    public AzureFamilyDatabase()
     {
       _db = new DocumentClient(
         new Uri("https://familycents.documents.azure.com:443/"), 
@@ -81,6 +81,64 @@ namespace FamilyCents.App.Data.FamilyTasks
         new RequestOptions { PartitionKey = new PartitionKey(accountId) });
 
       return doc.Document;
+    }
+
+    public async Task<CustomerCreditLimit> UpdateCreditLimit(int accountId, int customerId, decimal creditLimit)
+    {
+      var currentLimit = await GetCreditLimit(accountId, customerId);
+
+      var updatedLimit = currentLimit?.Clone() ?? throw new Exception("Credit not yet established");
+
+      updatedLimit.Current = creditLimit;
+
+      await _db.UpsertDocumentAsync(
+        UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyMembers"),
+        updatedLimit);
+
+      return updatedLimit;
+    }
+
+    public Task<ImmutableList<CustomerCreditLimit>> GetAllFamilyMembersCredit(int accountId)
+    {
+      var result = _db.CreateDocumentQuery<CustomerCreditLimit>(UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyMembers"))
+        .Where(d => d.AccountId == accountId)
+        .ToImmutableList();
+
+      return Task.FromResult(result);
+    }
+
+    public async Task<CustomerCreditLimit> UpdateCreditLimitRange(int accountId, int customerId, decimal min, decimal max)
+    {
+      var currentLimit = await GetCreditLimit(accountId, customerId);
+
+      var updatedLimit = currentLimit?.Clone() ?? new CustomerCreditLimit
+      {
+        CustomerCreditLimitId = Guid.NewGuid(),
+        AccountId = accountId,
+        CustomerId = customerId,
+        Current = min,
+        Max = max,
+        Min = min,
+      };
+
+      updatedLimit.Max = max;
+      updatedLimit.Min = min;
+
+      await _db.UpsertDocumentAsync(
+        UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyMembers"),
+        updatedLimit);
+
+      return updatedLimit;
+    }
+
+    public Task<CustomerCreditLimit> GetCreditLimit(int accountId, int customerId)
+    {
+      var result = _db.CreateDocumentQuery<CustomerCreditLimit>(UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyMembers"))
+        .Where(d => d.AccountId == accountId && d.CustomerId == customerId)
+        .ToList()
+        .FirstOrDefault();
+
+      return Task.FromResult(result);
     }
   }
 }

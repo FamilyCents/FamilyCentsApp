@@ -4,16 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FamilyCents.App.Api.Services;
+using FamilyCents.App.Data.Local;
+using FamilyCents.App.Api.Models;
 
 namespace FamilyCents.App.Api.Controllers
 {
   public class FamilyController : Controller
   {
     private readonly IFamilyListService _familyListService;
+    private readonly IFamilyDb _faimilyDb;
 
-    public FamilyController(IFamilyListService familyListService)
+    public FamilyController(IFamilyListService familyListService, IFamilyDb faimilyDb)
     {
       _familyListService = familyListService;
+      _faimilyDb = faimilyDb;
     }
 
     [HttpGet]
@@ -36,6 +40,20 @@ namespace FamilyCents.App.Api.Controllers
       }
 
       return Json(thisFamilyMember);
+    }
+
+    [ActionName("User")]
+    [HttpPut("/api/[controller]/{accountId:int}/[action]/{customerId:int}")]
+    public async Task<IActionResult> PutUser(int accountId, int customerId, [FromBody]UserCreditScore score)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest();
+      }
+
+      await _faimilyDb.UpdateCreditLimitRange(accountId, customerId, score.MinCreditLimit.Value, score.MaxCreditLimit.Value);
+
+      return Ok();
     }
   }
 }

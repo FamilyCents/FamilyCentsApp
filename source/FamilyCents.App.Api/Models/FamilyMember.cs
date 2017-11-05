@@ -11,7 +11,9 @@ namespace FamilyCents.App.Api.Models
     public string Name { get; set; }
     public decimal VirtualBalance { get; set; }
     public int VirtualCreditScore { get; set; }
-    public decimal VirtualCreditLimit { get; set; }
+    public decimal? VirtualCreditLimit { get; set; }
+    public decimal? MaxCreditLimit { get; set; }
+    public decimal? MinCreditLimit { get; set; }
     public bool IsPrimary { get; set; }
     public List<RecentTransaction> RecentTransactions { get; set; }
   }

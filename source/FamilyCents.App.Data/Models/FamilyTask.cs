@@ -31,6 +31,6 @@ namespace FamilyCents.App.Data.Models
     [JsonIgnore]
     decimal IAffectsBalance.Amount => -Value;
 
-    public FamilyTask Clone() => MemberwiseClone() as FamilyTask;
+    internal FamilyTask Clone() => MemberwiseClone() as FamilyTask;
   }
 }
