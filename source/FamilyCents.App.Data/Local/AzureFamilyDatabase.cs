@@ -89,7 +89,9 @@ namespace FamilyCents.App.Data.Local
 
       var updatedLimit = currentLimit?.Clone() ?? throw new Exception("Credit not yet established");
 
+      updatedLimit.Previous = updatedLimit.Current;
       updatedLimit.Current = creditLimit;
+      updatedLimit.WhenChanged = DateTimeOffset.UtcNow;
 
       await _db.UpsertDocumentAsync(
         UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyMembers"),

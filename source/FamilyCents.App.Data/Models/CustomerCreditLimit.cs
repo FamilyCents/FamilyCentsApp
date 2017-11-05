@@ -10,6 +10,10 @@ namespace FamilyCents.App.Data.Models
     [JsonProperty]
     public decimal Current { get; internal set; }
     [JsonProperty]
+    public decimal Previous { get; internal set; }
+    [JsonProperty]
+    public DateTimeOffset? WhenChanged { get; internal set; }
+    [JsonProperty]
     public decimal Max { get; internal set; }
     [JsonProperty]
     public decimal Min { get; internal set; }

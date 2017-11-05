@@ -30,6 +30,7 @@ namespace FamilyCents.App.Api
         .AddSingleton<IAccountsApi, AccountsApi>()
         .AddSingleton<ITransactionsApi, TransactionsApi>()
         .AddSingleton<ICustomersApi, CustomersApi>()
+        .AddSingleton<IPaymentsApi, PaymentsApi>()
         .AddSingleton<IFamilyDb, AzureFamilyDatabase>()
         .AddSingleton<IFamilyAccountDb, FamilyAccountDb>()
         .AddSingleton<IFamilyListService, FamilyListService>();

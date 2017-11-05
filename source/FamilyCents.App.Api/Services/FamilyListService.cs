@@ -1,4 +1,6 @@
 ﻿using FamilyCents.App.Api.Models;
+using FamilyCents.App.CreditEngine;
+using FamilyCents.App.CreditEngine.ScoreComponents;
 using FamilyCents.App.Data;
 using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.FamilyAccounts;
@@ -19,14 +21,16 @@ namespace FamilyCents.App.Api.Services
     private readonly ITransactionsApi _transactionsApi;
     private readonly IFamilyDb _familyTaskDb;
     private readonly IFamilyAccountDb _accountDb;
+    private readonly IPaymentsApi _paymentsApi;
 
-    public FamilyListService(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyDb familyTaskDb, IFamilyAccountDb accountDb)
+    public FamilyListService(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyDb familyTaskDb, IFamilyAccountDb accountDb, IPaymentsApi paymentsApi)
     {
       _customersApi = customersApi;
       _accountsApi = accountsApi;
       _transactionsApi = transactionsApi;
       _familyTaskDb = familyTaskDb;
       _accountDb = accountDb;
+      _paymentsApi = paymentsApi;
     }
 
     public async Task<List<FamilyMember>> ListFamilyMembers(int accountId)
@@ -35,6 +39,8 @@ namespace FamilyCents.App.Api.Services
       var fetchAccountCustomers = _customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = accountId });
       var fetchAccountTransactions = _transactionsApi.MakeRequestAsync(new TransactionApiRequest { AccountId = accountId });
       var fetchCreditLimits = _familyTaskDb.GetAllFamilyMembersCredit(accountId);
+      var fetchAllTasks = _familyTaskDb.GetAllTasks(accountId);
+      var fetchAccountPayments = _paymentsApi.MakeRequestAsync(new PaymentApiRequest { AccountId = accountId });
 
       var accountCustomers = (await fetchAccountCustomers).First().Customers;
       var fetchBalances = Task.WhenAll(accountCustomers.Select(customer => _accountDb.GetBalance(accountId, customer.CustomerId)));
@@ -43,9 +49,13 @@ namespace FamilyCents.App.Api.Services
       var accountTransactions = (await fetchAccountTransactions).First().CustomerTransactions;
       var balances = await fetchBalances;
       var creditLimits = await fetchCreditLimits;
+      var completedTasks = (await fetchAllTasks).Where(task => task.ApprovedBy != null && task.CompletedBy != null).ToList();
+      var accountPayments = await fetchAccountPayments;
       var account = accountDetails.Single();
 
-      var rnd = new Random();
+      var actualAccountPayments = accountPayments.Single().Payment.Select(payment => new CreditEngine.Payment(payment.ToDateTimeOffset(), payment.ToDateTimeOffset(), (double)payment.TotalMonthlyBalance, (double)payment.TotalBalanceRemaining, (double)payment.TotalBalancePaid)).ToList();
+
+      var now = DateTimeOffset.UtcNow;
 
       var familyMembers =
         from customer in accountCustomers
@@ -56,6 +66,9 @@ namespace FamilyCents.App.Api.Services
         join creditLimit in creditLimits
         on customer.CustomerId equals creditLimit.CustomerId
         into customerCreditLimits
+        join complatedTask in completedTasks
+        on customer.CustomerId equals complatedTask.CompletedBy.Value
+        into customerCompletedTasks
         let creditLimit = customerCreditLimits.FirstOrDefault()
         let transactions = customerTransactions.Transactions
           .OrderByDescending(t => t.ToDateTimeOffset())
@@ -67,18 +80,36 @@ namespace FamilyCents.App.Api.Services
             When = t.ToDateTimeOffset().Date.ToShortDateString()
           })
           .ToList()
-        let creditScore = rnd.Next(300, 850)
+        let isAdmin = account.PrimaryCustomerId == customer.CustomerId
+        let creditLimitChange = new CreditLimitChange(
+          (double)customerBalance.Balance, 
+          (double)(creditLimit?.Previous ?? 0M),
+          (double)(creditLimit?.Current ?? 0M),
+          creditLimit?.WhenChanged ?? now)
+        let consumptionScore = new ConsumptionScore(
+          creditLimitChange, 
+          (double)customerBalance.Balance)
+        let largePurchaseSchore = new LargePurchaseScore(
+          customerTransactions.Transactions.Select(t => new CreditEngine.Transaction(t.ToDateTimeOffset(), (double)t.Amount)).ToList(), 
+          (double)(creditLimit?.Current ?? 0M))
+        let lifespanScore = new LifespanScore(
+          customerTransactions.Transactions.OrderBy(t => t.ToDateTimeOffset()).First().ToDateTimeOffset())
+        let paymentScore = new PaymentScore(isAdmin ? actualAccountPayments : new List<CreditEngine.Payment>()) // TODO
+        let utilitzationScore = new UtilizationScore(
+          (double)(creditLimit?.Current ?? 0M), 
+          (double)customerBalance.Balance)
+        let score = new CreditScore(consumptionScore, largePurchaseSchore, lifespanScore, paymentScore, utilitzationScore)
         select new FamilyMember
         {
           CustomerId = customer.CustomerId,
-          IsPrimary = account.PrimaryCustomerId == customer.CustomerId,
+          IsPrimary = isAdmin,
           Name = $"{customer.FirstName} {customer.LastName}",
           RecentTransactions = transactions,
           VirtualBalance = customerBalance.Balance,
           VirtualCreditLimit = creditLimit?.Current,
           MaxCreditLimit = creditLimit?.Max,
           MinCreditLimit = creditLimit?.Min,
-          VirtualCreditScore = creditScore,
+          VirtualCreditScore = (int)score.Score,
         };
 
       return familyMembers.ToList();
