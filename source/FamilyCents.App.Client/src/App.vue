@@ -55,12 +55,15 @@ export default {
       drawer: false
   }),
   beforeCreate(){
-    this.$store.dispatch('initializeFamily', [152300000, 152310000]);
+    console.log(this.$route.query.isChild);
+    let userId = !this.$route.query.isChild ? 152310000 : 152320000;
+    console.log(userId);
+    this.$store.dispatch('initializeFamily', [152300000, userId]);
   },
   created() {
-    setInterval(
-      () => this.$store.dispatch('reloadFamily')
-      , 4000);
+    // setInterval(
+    //   () => this.$store.dispatch('reloadFamily')
+    //   , 4000);
   }
 }
 </script>

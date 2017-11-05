@@ -7,7 +7,7 @@
             <v-layout>
               <v-flex row>
                 <v-avatar size="80px">
-                  <img :src="`https://randomuser.me/api/portraits/${user.customerId%13%2 ? 'women' : 'men'}/${user.customerId%13}.jpg`" alt="avatar">
+                  <img :src="`https://randomuser.me/api/portraits/${(user ? user.customerId%13%2 : 0) ? 'women' : 'men'}/${(user ? user.customerId%13 : 0) }.jpg`" alt="avatar">
                 </v-avatar>
               </v-flex>
               <v-flex>
@@ -35,7 +35,7 @@ export default {
   props: ['user'],
   methods: {
     creditRemaining(user){
-      return user.virtualCreditLimit - user.virtualBalance;
+      return Math.round((user.maxCreditLimit - user.virtualBalance)*100 )/100;
     },
   }
 }

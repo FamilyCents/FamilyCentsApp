@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     creditRemaining(user){
-      return user.virtualCreditLimit;// - user.virtualBalance;
+      return Math.round((user.maxCreditLimit - user.virtualBalance)*100 )/100;
     },
     colorFromCreditScore(creditScore){
       if(creditScore < 500)
