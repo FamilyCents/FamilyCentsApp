@@ -1,4 +1,5 @@
 ﻿using FamilyCents.App.Api.Models;
+using FamilyCents.App.Api.Services;
 using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.Local;
 using FamilyCents.App.Data.Models;
@@ -14,11 +15,13 @@ namespace FamilyCents.App.Api.Controllers
   {
     private readonly IFamilyDb _tasksDb;
     private readonly ICustomersApi _customersApi;
+    private readonly IFamilyListService _familyListService;
 
-    public TasksController(IFamilyDb tasksDb, ICustomersApi customersApi)
+    public TasksController(IFamilyDb tasksDb, ICustomersApi customersApi, IFamilyListService familyListService)
     {
       _tasksDb = tasksDb;
       _customersApi = customersApi;
+      _familyListService = familyListService;
     }
 
     [HttpGet]
@@ -88,7 +91,15 @@ namespace FamilyCents.App.Api.Controllers
         }
       }
 
-      await _tasksDb.UpdateTask(accountId, taskId, update.CompletedBy, update.ApprovedBy);
+      var task = await _tasksDb.UpdateTask(accountId, taskId, update.CompletedBy, update.ApprovedBy);
+
+      if (task.ApprovedBy.HasValue && task.CompletedBy.HasValue)
+      {
+        var user = (await _familyListService.ListFamilyMembers(accountId)).FirstOrDefault(x => x.CustomerId == task.CompletedBy);
+        var creditLimit = await _tasksDb.GetCreditLimit(accountId, task.CompletedBy.Value);
+
+        await _tasksDb.UpdateCreditLimit(accountId, task.CompletedBy.Value, Math.Min(creditLimit.Min, creditLimit.Current + 10));
+      }
 
       return Ok();
     }

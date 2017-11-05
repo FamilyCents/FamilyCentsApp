@@ -31,7 +31,7 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
         (LargePurchases.Score * 0.10 ) + 
         (Lifespan.Score * 0.15) +
         (Payments.Score * 0.35) + 
-        (Utilization.Score *  0.30)) / 5, 0, MidpointRounding.ToEven);
+        (Utilization.Score *  0.30)), 0, MidpointRounding.ToEven);
     }
 
 

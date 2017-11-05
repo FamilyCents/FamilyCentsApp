@@ -84,7 +84,7 @@ namespace FamilyCents.App.Api.Services
         let creditLimitChange = new CreditLimitChange(
           (double)customerBalance.Balance,
           (double)(creditLimit?.Previous ?? 0M),
-          (double)(creditLimit?.Current ?? 0M),
+          (double)(creditLimit?.Current ?? account.CreditLimit),
           creditLimit?.WhenChanged ?? now)
         let consumptionScore = new ConsumptionScore(
           creditLimitChange,
@@ -93,7 +93,7 @@ namespace FamilyCents.App.Api.Services
           customerTransactions.Transactions
             .Select(t => new CreditEngine.Transaction(t.ToDateTimeOffset(), (double)t.Amount))
             .ToList(),
-          (double)(creditLimit?.Current ?? 0M))
+          (double)(creditLimit?.Current ?? account.CreditLimit))
         let lifespanScore = new LifespanScore(
           customerTransactions.Transactions
             .OrderBy(t => t.ToDateTimeOffset())
@@ -118,7 +118,7 @@ namespace FamilyCents.App.Api.Services
           .ToList()
         let paymentScore = new PaymentScore(isAdmin ? actualAccountPayments : virtualBills) // TODO
         let utilitzationScore = new UtilizationScore(
-          (double)(creditLimit?.Current ?? 0M), 
+          (double)(creditLimit?.Current ?? account.CreditLimit), 
           (double)customerBalance.Balance)
         let score = new CreditScore(consumptionScore, largePurchaseSchore, lifespanScore, paymentScore, utilitzationScore)
         select new FamilyMember
@@ -128,7 +128,7 @@ namespace FamilyCents.App.Api.Services
           Name = $"{customer.FirstName} {customer.LastName}",
           RecentTransactions = transactions,
           VirtualBalance = customerBalance.Balance,
-          VirtualCreditLimit = creditLimit?.Current,
+          VirtualCreditLimit = creditLimit?.Current ?? account.CreditLimit,
           MaxCreditLimit = creditLimit?.Max,
           MinCreditLimit = creditLimit?.Min,
           VirtualCreditScore = (int)score.Score,
