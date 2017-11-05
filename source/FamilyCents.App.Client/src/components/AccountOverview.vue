@@ -27,8 +27,8 @@
           </v-card-title>
           <v-layout col>
             <v-flex fluid grid-list-md class="grey lighten-4" id="account-overview" xs12>
-              <v-card-text class="subheading">Balance: ${{user.virtualBalance}}</v-card-text>
-              <v-card-text class="subheading pt-0">Credit Remaining: ${{creditRemaining(user)}}</v-card-text>         
+              <v-card-text class="subheading">Balance: {{user.virtualBalance.toLocaleString("en-US", { style:"currency", currency:"USD" })}}</v-card-text>
+              <v-card-text class="subheading pt-0">Credit Remaining: {{creditRemaining(user).toLocaleString("en-US", { style:"currency", currency:"USD" })}}</v-card-text>         
             </v-flex>
           </v-layout>
         </v-card>

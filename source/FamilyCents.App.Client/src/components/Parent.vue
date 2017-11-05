@@ -29,8 +29,8 @@
             </v-layout>
             <v-card class="grey lighten-4 text-xs-center">
               <v-card-text class="display-2">{{child.virtualCreditScore}}</v-card-text>
-              <v-card-text class="subheading pt-0">Balance: ${{child.virtualBalance}}</v-card-text>
-              <v-card-text class="subheading pt-0">Credit Remaining: ${{creditRemaining(child)}}</v-card-text>
+              <v-card-text class="subheading pt-0">Balance: {{child.virtualBalance.toLocaleString("en-US", { style:"currency", currency:"USD" })}}</v-card-text>
+              <v-card-text class="subheading pt-0">Credit Remaining: {{creditRemaining(child).toLocaleString("en-US", { style:"currency", currency:"USD" })}}</v-card-text>
             </v-card>
           </v-card>
         </v-flex>
