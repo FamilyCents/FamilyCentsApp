@@ -2,6 +2,7 @@ using FamilyCents.App.CreditEngine.ScoreComponents;
 using FamilyCents.App.Data.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace FamilyCents.App.Tests
@@ -310,11 +311,197 @@ namespace FamilyCents.App.Tests
 
     #endregion
 
-
     #region Payments
+
+    [Fact]
+    public void CalculatePayment()
+    {
+
+      var now = DateTimeOffset.UtcNow;
+
+      var paymentList = new List<CreditEngine.Payment>
+      {
+        new CreditEngine.Payment(now.AddMonths(-1), now.AddMonths(-1).AddDays(-1), 75, 0, 75)
+      };
+
+      var payment = new PaymentScore(paymentList);
+
+      var score = payment.Score;
+
+      Assert.Equal(1000, score);
+    }
+
+    [Fact]
+    public void CalculatePayment_missedPayments()
+    {
+
+      var now = DateTimeOffset.UtcNow;
+
+      var paymentList = new List<CreditEngine.Payment>
+      {
+        new CreditEngine.Payment(now.AddMonths(-1).AddDays(-5), now.AddMonths(-1).AddDays(-5), 75, 75, 0)
+      };
+
+      var payment = new PaymentScore(paymentList);
+
+      var score = payment.Score;
+
+      Assert.Equal(950, score);
+    }
+
+    [Fact]
+    public void CalculatePayment_missedPayments_multimonth()
+    {
+
+      var now = DateTimeOffset.UtcNow;
+
+      var paymentList = new List<CreditEngine.Payment>
+      {
+        new CreditEngine.Payment(now.AddMonths(-4).AddDays(-5), now.AddMonths(-4).AddDays(-5), 75, 75, 0),
+        new CreditEngine.Payment(now.AddMonths(-3).AddDays(-5), now.AddMonths(-3).AddDays(-5), 75, 75, 0),
+        new CreditEngine.Payment(now.AddMonths(-2).AddDays(-5), now.AddMonths(-2).AddDays(-5), 75, 75, 0),
+        new CreditEngine.Payment(now.AddMonths(-1).AddDays(-5), now.AddMonths(-1).AddDays(-5), 75, 75, 0)
+      };
+
+      var payment = new PaymentScore(paymentList);
+
+      var score = payment.Score;
+
+      Assert.Equal(500, score);
+    }
+
+    [Fact]
+    public void CalculatePayment_missedPayments_multimonth_skip()
+    {
+
+      var now = DateTimeOffset.UtcNow;
+
+      var paymentList = new List<CreditEngine.Payment>
+      {
+        new CreditEngine.Payment(now.AddMonths(-4).AddDays(-5), now.AddMonths(-4).AddDays(-5), 75, 75, 0),
+        new CreditEngine.Payment(now.AddMonths(-3).AddDays(-5), now.AddMonths(-3).AddDays(-5), 75, 75, 0),
+        new CreditEngine.Payment(now.AddMonths(-2).AddDays(-5), now.AddMonths(-2).AddDays(-5), 75, 0, 75),
+        new CreditEngine.Payment(now.AddMonths(-1).AddDays(-5), now.AddMonths(-1).AddDays(-5), 75, 75, 0)
+      };
+
+      var payment = new PaymentScore(paymentList);
+
+      var score = payment.Score;
+
+      Assert.Equal(800, score);
+    }
+
     #endregion
 
     #region LargePurchase
+
+    [Fact]
+    public void CalculateLargePurchase()
+    {
+
+      var listOfPurchases = new List<CreditEngine.Transaction>()
+      {
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays( -5), 90),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-10), 85),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-15), 80),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-20), 75),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-25), 70),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-30), 65),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-35), 60),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-40), 55),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-45), 50),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-50), 45),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-55), 40),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-60), 35),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-65), 30),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-70), 25),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-75), 20),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-80), 15),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-85), 10),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-90),  5),
+      };
+
+
+      var largePurchase = new LargePurchaseScore(listOfPurchases, 1750); //87.5
+
+      var score = largePurchase.Score;
+
+      Assert.Equal(750, score);
+    }
+
+    [Fact]
+    public void CalculateLargePurchase_outsideRange()
+    {
+
+
+      var listOfPurchases = new List<CreditEngine.Transaction>()
+      {
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays( -5), 90),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-10), 85),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-15), 80),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-20), 75),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-25), 70),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-30), 65),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-35), 60),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-40), 55),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-45), 50),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-50), 45),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-55), 40),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-60), 35),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-65), 30),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-70), 25),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-75), 20),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-80), 15),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-85), 10),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-90),  5),
+
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-121),  500),
+      };
+
+      var largePurchase = new LargePurchaseScore(listOfPurchases, 1750); //87.5
+
+      var score = largePurchase.Score;
+
+      Assert.Equal(750, score);
+    }
+
+
+    [Fact]
+    public void CalculateLargePurchase_insideRange()
+    {
+
+
+      var listOfPurchases = new List<CreditEngine.Transaction>()
+      {
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays( -5), 90),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-10), 85),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-15), 80),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-20), 75),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-25), 70),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-30), 65),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-35), 60),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-40), 55),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-45), 50),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-50), 45),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-55), 40),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-60), 35),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-65), 30),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-70), 25),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-75), 20),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-80), 15),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-85), 10),
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-90),  5),
+
+        new CreditEngine.Transaction(DateTimeOffset.UtcNow.AddDays(-119),  500),
+      };
+
+      var largePurchase = new LargePurchaseScore(listOfPurchases, 1750); //87.5
+
+      var score = largePurchase.Score;
+
+      Assert.Equal(500, score);
+    }
+
     #endregion
 
   }

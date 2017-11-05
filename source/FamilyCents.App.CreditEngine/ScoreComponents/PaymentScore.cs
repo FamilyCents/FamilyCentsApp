@@ -39,16 +39,19 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
     {
       var result = _maxScore;
 
-      var failurePercentage = this.Payments
-        .Where(rec => rec.DateDue >= now.AddMonths(-(_monthsBack)))
-        .GroupBy(rec => rec.DateDue.Date)
-        .Where(group => !group.Any(rec => rec.MinimumRemaining == 0))
-        .Select(group => new AggregatePayment() { CurrentCombo = 0, CurrentPenalty = 0, DueDate = group.First().DateDue })
-        .OrderBy(rec => rec.DueDate)
-        .Aggregate((previous, current) =>
+      var listToAggregate = this.Payments
+        ?.Where(rec => rec.DateDue >= now.AddMonths(-(_monthsBack)))
+        ?.GroupBy(rec => rec.DateDue.Date)
+        ?.Where(group => !group.Any(rec => rec.MinimumRemaining == 0))
+        ?.Select(group => new AggregatePayment() { CurrentCombo = 0, CurrentPenalty = 0, DueDate = group.First().DateDue })
+        ?.OrderBy(rec => rec.DueDate).ToList();
+
+
+      var failurePercentage = listToAggregate.Any() ? listToAggregate
+        .Aggregate(new AggregatePayment(), (previous, current) =>
         {
           current.CurrentCombo++;
-          if (previous.DueDate == current.DueDate)
+          if (previous.DueDate.AddMonths(1).Month == current.DueDate.Month)
           {
             current.CurrentCombo = previous.CurrentCombo + 1;
           }
@@ -61,7 +64,7 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 
 
           return current;
-        }).CurrentPenalty;
+        }).CurrentPenalty : 0d;
 
       if (failurePercentage >= 1)
       {

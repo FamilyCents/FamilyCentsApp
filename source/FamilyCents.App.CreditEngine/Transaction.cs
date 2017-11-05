@@ -10,5 +10,10 @@ namespace FamilyCents.App.CreditEngine
 
     public double Amount { get; private set; }
 
+    public Transaction(DateTimeOffset activityDate, double amount)
+    {
+      this.ActivityDate = activityDate;
+      this.Amount = amount;
+    }
   }
 }

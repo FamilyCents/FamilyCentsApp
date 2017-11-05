@@ -18,7 +18,7 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
     private const int _maxAcceptableLargePurchases = _minDaysForMax / 30;
     private const double _acceptablePercentage = 0.05;
 
-    public double Score { get => 0; }
+    public double Score { get => CalculateScore(this.RecentTransactions, this.CreditLimit, DateTimeOffset.UtcNow); }
 
     public List<Transaction> RecentTransactions { get; private set; }
 

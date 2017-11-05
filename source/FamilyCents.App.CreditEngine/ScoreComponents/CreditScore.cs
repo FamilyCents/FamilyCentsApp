@@ -26,8 +26,12 @@ namespace FamilyCents.App.CreditEngine.ScoreComponents
 
     public double Score
     {
-      get => ConsumptionRate.Score + LargePurchases.Score + Lifespan.Score +
-             Payments.Score + Utilization.Score;
+      get => Math.Round((
+        (ConsumptionRate.Score * 0.10) + 
+        (LargePurchases.Score * 0.10 ) + 
+        (Lifespan.Score * 0.15) +
+        (Payments.Score * 0.35) + 
+        (Utilization.Score *  0.30)) / 5, 0, MidpointRounding.ToEven);
     }
 
 
