@@ -62,13 +62,16 @@ namespace FamilyCents.App.ApiTestConsole
 
             var tasks = new List<(decimal value, string description, DateTimeOffset when)>();
 
+            Console.WriteLine($"++ {customer.FirstName} {transaction.Amount:C}");
+
             await taskApi.CreateTask(
               accountId: accountId,
               creator: primary,
               description: $"Paid back for transaction for {transaction.MerchantName}",
               value: transaction.Amount,
               whenCompleted: transaction.ToDateTimeOffset().AddDays(random.Next(0, 10)),
-              whenCreated: transaction.ToDateTimeOffset());
+              whenCreated: transaction.ToDateTimeOffset(),
+              completedBy: customer.CustomerId);
 
             await Task.Delay(TimeSpan.FromSeconds(0.5));
           }

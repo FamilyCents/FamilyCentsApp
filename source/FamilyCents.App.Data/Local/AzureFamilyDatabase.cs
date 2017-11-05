@@ -48,10 +48,10 @@ namespace FamilyCents.App.Data.Local
 
     public Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value)
     {
-      return CreateTask(accountId, creator, description, value, DateTimeOffset.UtcNow, null);
+      return CreateTask(accountId, creator, description, value, DateTimeOffset.UtcNow, null, null);
     }
 
-    public async Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value, DateTimeOffset whenCreated, DateTimeOffset? whenCompleted)
+    public async Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value, DateTimeOffset whenCreated, DateTimeOffset? whenCompleted, int? completedBy)
     {
       var task = new FamilyTask
       {
@@ -62,6 +62,8 @@ namespace FamilyCents.App.Data.Local
         CreatedBy = creator,
         WhenCreated = whenCreated,
         WhenCompleted = whenCompleted,
+        WhenApproved = whenCompleted,
+        CompletedBy = completedBy,
         ApprovedBy = whenCompleted.HasValue ? (int?)creator : null
       };
 
