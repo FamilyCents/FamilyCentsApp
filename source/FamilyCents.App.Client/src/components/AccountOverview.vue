@@ -47,9 +47,9 @@ export default {
       return Math.round((user.maxCreditLimit - user.virtualBalance)*100 )/100;
     },
     creditGauge(creditScore){
-      if(creditScore < 400)
+      if(creditScore < 600)
         return "/static/30.png";
-      if(creditScore > 650)
+      if(creditScore > 800)
         return "/static/70.png";
       return "/static/50.png";
     }
