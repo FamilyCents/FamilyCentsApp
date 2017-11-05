@@ -14,8 +14,9 @@
     <!-- <control-sidebar></control-sidebar> -->
 
     
-    <Parent v-if="user.isParent" />
-    <Child v-else/>
+    <Parent v-if="isParent && !isLoading" />
+    <Child v-else-if="!isParent && !isLoading" />
+    <div v-else>Loading...</div>
   </v-container>
 </template>
 
@@ -35,10 +36,27 @@ export default {
     Parent,
     Child
   },
-  data () {
-    return {
-      user: {isParent: false, name: "Charlie Brown"}
+  computed: {
+    isParent: function(){
+      let currentUser = this.$store.getters.currentUser;
+      console.log(`Is Parent called 1: ${this.$store.getters.currentUser}`);
+      
+      if(currentUser){
+        console.log(`Is Parent called: ${this.$store.getters.currentUser.isPrimary}`);
+        return this.$store.getters.currentUser.isPrimary;
+      }
+      return false;
+    },
+    isLoading: function(){
+      console.log( `Loading: ${this.$store.getters.isLoading}`);
+      return this.$store.getters.isLoading;
     }
+  },
+  beforeCreate(){
+    this.$store.dispatch('loadFamily', [123200000, 123210000]);
+    
+    // // Hardcoded user set here. Pretend already authed
+    // this.$store.dispatch('updateCurrentUser', 123210000);
   }
 }
 </script>

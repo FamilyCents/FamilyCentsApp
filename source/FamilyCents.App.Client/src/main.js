@@ -5,18 +5,22 @@ import ElementUI from 'element-ui'
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
-Vue.use(Vuetify)
+import { store } from './store'
+
 
 Vue.config.productionTip = false
+Vue.use(Vuetify)
 Vue.use(ElementUI)
 Vue.use(ElementUI, {locale: 'en'})
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  store
 })
 
 // // Import top level component

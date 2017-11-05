@@ -3,9 +3,18 @@
     <!-- Main content -->
     <section>
         <div>
-            <!-- <div class="box-header with-border">
-                <h3 class="box-title">Tasks</h3>
-            </div> -->
+        <v-list two-line subheader>
+          <v-subheader>Tasks</v-subheader>
+          <v-list-tile avatar>
+            <v-list-tile-action>
+              <v-checkbox v-model="notifications"></v-checkbox>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Notifications</v-list-tile-title>
+              <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
             <div headline>
               Tasks
             </div>
@@ -28,6 +37,11 @@
 
 export default {
   name: 'TaskList',
+  data() {
+    return {
+      taskList: taskListSample
+    }
+  },
   computed: {
     taskList() {
       // console.log(taskListSample);
