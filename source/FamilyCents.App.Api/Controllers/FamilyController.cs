@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using FamilyCents.App.Data.Apis;
-using FamilyCents.App.Data.Models;
-using FamilyCents.App.Api.Models;
-using FamilyCents.App.Data;
-using FamilyCents.App.Data.FamilyTasks;
-using FamilyCents.App.Data.FamilyAccounts;
 using FamilyCents.App.Api.Services;
 
 namespace FamilyCents.App.Api.Controllers

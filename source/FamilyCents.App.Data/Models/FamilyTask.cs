@@ -23,7 +23,14 @@ namespace FamilyCents.App.Data.Models
     public DateTimeOffset? WhenCompleted { get; internal set; }
     [JsonProperty]
     public int? CompletedBy { get; internal set; }
+    [JsonProperty]
+    public DateTimeOffset? WhenApproved { get; internal set; }
+    [JsonProperty]
+    public int? ApprovedBy { get; internal set; }
+
     [JsonIgnore]
     decimal IAffectsBalance.Amount => -Value;
+
+    public FamilyTask Clone() => MemberwiseClone() as FamilyTask;
   }
 }

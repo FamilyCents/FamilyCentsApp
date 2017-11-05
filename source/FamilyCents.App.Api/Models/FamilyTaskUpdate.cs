@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FamilyCents.App.Api.Models
 {
-  public class FamilyTaskComletion
+  public class FamilyTaskUpdate
   {
-    [Required]
-    public int CompletedBy { get; set; }
+    public int? CompletedBy { get; set; }
+    public int? ApprovedBy { get; set; }
   }
 }
