@@ -19,13 +19,18 @@
                 <v-avatar size="65%" align-center>
                   <img :src="`https://randomuser.me/api/portraits/${child.customerId%13%2 ? 'women' : 'men'}/${child.customerId%13}.jpg`" alt="avatar">
                 </v-avatar>
-                <p>{{child.name}}</p>
+                <v-chip color="blue-grey darken-1" text-color="white">
+                <v-avatar>
+                  <v-icon>account_circle</v-icon>
+                </v-avatar>
+                {{child.name}}
+              </v-chip>
               </v-flex>
             </v-layout>
-            <v-card class="grey lighten-4">
-              <v-card-text class="subheading">Balance: {{child.virtualBalance}}</v-card-text>
-              <v-card-text class="subheading pt-0">Credit Remaining: {{creditRemaining(child)}}</v-card-text>
-              <v-card-text class="subheading pt-0">Credit Score: {{child.virtualCreditScore}}</v-card-text>
+            <v-card class="grey lighten-4 text-xs-center">
+              <v-card-text class="display-2">{{child.virtualCreditScore}}</v-card-text>
+              <v-card-text class="subheading pt-0">Balance: ${{child.virtualBalance}}</v-card-text>
+              <v-card-text class="subheading pt-0">Credit Remaining: ${{creditRemaining(child)}}</v-card-text>
             </v-card>
           </v-card>
         </v-flex>
@@ -57,11 +62,11 @@ export default {
       return Math.round((user.maxCreditLimit - user.virtualBalance)*100 )/100;
     },
     colorFromCreditScore(creditScore){
-      if(creditScore < 500)
-        return "red";
-      if(creditScore > 650)
-        return "green";
-      return "yellow";
+      if(creditScore < 600)
+        return "red lighten-1";
+      if(creditScore > 800)
+        return "teal accent-3";
+      return "amber accent-2";
     }
   }
 }

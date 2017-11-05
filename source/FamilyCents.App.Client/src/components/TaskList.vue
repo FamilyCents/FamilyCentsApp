@@ -8,6 +8,7 @@
               <v-checkbox 
               v-model="task.completedBy"
               @click="completeTask(task.id)"
+              v-if="!isParent"
               ></v-checkbox>
               <v-checkbox 
               v-model="task.approvedBy"

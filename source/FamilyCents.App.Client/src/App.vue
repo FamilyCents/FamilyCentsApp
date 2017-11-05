@@ -27,8 +27,9 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="cyan" dark fixed app>
-      <v-toolbar-title>Family Cents</v-toolbar-title>
+    <v-toolbar color="blue darken-2" dark fixed app>
+      <img
+      <v-toolbar-title>FamilyCents</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
     </v-toolbar>
