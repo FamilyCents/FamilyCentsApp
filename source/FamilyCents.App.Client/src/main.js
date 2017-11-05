@@ -4,22 +4,27 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import App from './App'
 import router from './router'
+import Vuetify from 'vuetify'
+import { store } from './store'
+
 
 Vue.config.productionTip = false
+Vue.use(Vuetify)
 Vue.use(ElementUI)
 Vue.use(ElementUI, {locale: 'en'})
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  store
 })
 
-// Import top level component
-import 'bootstrap/dist/css/bootstrap.css'
-import 'element-ui/lib/theme-default/index.css'
+// // Import top level component
+// import 'bootstrap/dist/css/bootstrap.css'
+import 'element-ui/lib/theme-chalk/index.css'
 import 'material-design-icons/iconfont/material-icons.css'
-import 'dripicons/webfont/webfont.css'
-import 'vue-directive-tooltip/css/index.css'
+import 'vuetify/dist/vuetify.min.css'

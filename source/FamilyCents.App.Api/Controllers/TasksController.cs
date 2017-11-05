@@ -55,21 +55,40 @@ namespace FamilyCents.App.Api.Controllers
 
     [HttpPut("/api/[controller]/{accountId}/[action]/{taskId}")]
     [ActionName(nameof(Task))]
-    public async Task<IActionResult> TaskCompleted(int accountId, Guid taskId, [FromBody]FamilyTaskComletion taskCompletion)
+    public async Task<IActionResult> TaskCompleted(int accountId, Guid taskId, [FromBody]FamilyTaskUpdate update)
     {
       if (!ModelState.IsValid)
       {
         return BadRequest();
       }
 
-      var accountUsers = await _customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = accountId, CustomerId = taskCompletion.CompletedBy });
+      // Validate CompletedBy
 
-      if (!accountUsers.Single().Customers.Any())
+      if (update.CompletedBy.HasValue)
       {
-        return BadRequest("Customer Not Found");
+        var accountUsers = await _customersApi.MakeRequestAsync(
+        new CustomerApiRequest { AccountId = accountId, CustomerId = update.CompletedBy });
+
+        if (!accountUsers.Single().Customers.Any())
+        {
+          return BadRequest("CompletedBy User Not Found");
+        }
       }
 
-      await _tasksDb.CompleteTask(accountId, taskId, taskCompletion.CompletedBy);
+      // Validate ApprovedBy
+
+      if (update.ApprovedBy.HasValue)
+      {
+        var accountUsers = await _customersApi.MakeRequestAsync(
+        new CustomerApiRequest { AccountId = accountId, CustomerId = update.ApprovedBy });
+
+        if (!accountUsers.Single().Customers.Any())
+        {
+          return BadRequest("ApprovedBy User Not Found");
+        }
+      }
+
+      await _tasksDb.UpdateTask(accountId, taskId, update.CompletedBy, update.ApprovedBy);
 
       return Ok();
     }

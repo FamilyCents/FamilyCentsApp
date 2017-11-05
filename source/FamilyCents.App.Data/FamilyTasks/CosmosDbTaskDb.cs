@@ -21,27 +21,29 @@ namespace FamilyCents.App.Data.FamilyTasks
         "4cUGOpweNj7Fgyrm5Xu7FKVTDHjUkQ1Bln6N5pTz7zUDeGh6IOyqSrbg962pasqwmQMbPVPkmyHljkWHailjjA==");
     }
 
-    public async Task<FamilyTask> CompleteTask(int accountId, Guid taskId, int completedBy)
+    public async Task<FamilyTask> UpdateTask(int accountId, Guid taskId, int? completedBy, int? approvedBy)
     {
       var task = await GetTask(accountId, taskId);
 
-      var completedTask = new FamilyTask
+      var updatedTask = task.Clone();
+
+      if (completedBy.HasValue)
       {
-        AccountId = task.AccountId,
-        CompletedBy = completedBy,
-        CreatedBy = task.CreatedBy,
-        Description = task.Description,
-        TaskId = task.TaskId,
-        Value = task.Value,
-        WhenCompleted = DateTimeOffset.UtcNow,
-        WhenCreated = task.WhenCreated,
-      };
+        updatedTask.CompletedBy = completedBy;
+        updatedTask.WhenCompleted = DateTimeOffset.UtcNow;
+      }
+
+      if (approvedBy.HasValue)
+      {
+        updatedTask.ApprovedBy = approvedBy;
+        updatedTask.WhenApproved = DateTimeOffset.UtcNow;
+      }
 
       await _db.UpsertDocumentAsync(
         UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyTasks"),
-        completedTask);
+        updatedTask);
 
-      return completedTask;
+      return updatedTask;
     }
 
     public async Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value)

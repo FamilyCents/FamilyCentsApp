@@ -1,12 +1,24 @@
 <template>
   <div class="task-list">
     <!-- Main content -->
-    <section class="content">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Tasks</h3>
+    <section>
+        <div>
+        <v-list two-line subheader>
+          <v-subheader>Tasks</v-subheader>
+          <v-list-tile avatar>
+            <v-list-tile-action>
+              <v-checkbox v-model="notifications"></v-checkbox>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Notifications</v-list-tile-title>
+              <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+            <div headline>
+              Tasks
             </div>
-            <div class="box-body" style="min-height:400px;">
+            <div>
                 <ul>
                   <li v-for="(task, index) in taskList" :key="index">
                     <div> Task: {{task.description}}</div>
@@ -25,9 +37,14 @@
 
 export default {
   name: 'TaskList',
+  data() {
+    return {
+      taskList: taskListSample
+    }
+  },
   computed: {
     taskList() {
-      console.log(taskListSample);
+      // console.log(taskListSample);
       return taskListSample;
     }
   },

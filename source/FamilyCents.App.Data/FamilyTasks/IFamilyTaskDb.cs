@@ -11,7 +11,7 @@ namespace FamilyCents.App.Data.FamilyTasks
   {
     Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value);
 
-    Task<FamilyTask> CompleteTask(int accountId, Guid taskId, int completedBy);
+    Task<FamilyTask> UpdateTask(int accountId, Guid taskId, int? completedBy, int? approvedBy);
 
     Task<FamilyTask> GetTask(int accountId, Guid taskId);
 

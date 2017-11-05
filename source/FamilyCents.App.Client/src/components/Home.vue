@@ -1,23 +1,23 @@
 <template>
-  <div class="home">
-    <app-header></app-header>
+  <v-container fluid class="home pa-0">
+     <!-- <app-header></app-header> -->
 
     <!-- Left side column. contains the sidebar -->
-    <app-sidebar></app-sidebar>
-    <div>Menu Bar</div>
+    <!-- <app-sidebar></app-sidebar> -->
 
     <!-- Content Wrapper. Contains page content -->
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
     <!-- /.content-wrapper -->
 
-    <app-footer></app-footer>
+    <!-- <app-footer></app-footer> -->
 
-    <control-sidebar></control-sidebar>
+    <!-- <control-sidebar></control-sidebar> -->
 
     
-    <Parent v-if="user.isParent" />
-    <Child v-else/>
-  </div>
+    <Parent v-if="isParent && !isLoading" />
+    <Child v-else-if="!isParent && !isLoading" />
+    <div v-else>Loading...</div>
+  </v-container>
 </template>
 
 <script>
@@ -36,10 +36,27 @@ export default {
     Parent,
     Child
   },
-  data () {
-    return {
-      user: {isParent: false, name: "Charlie Brown"}
+  computed: {
+    isParent: function(){
+      let currentUser = this.$store.getters.currentUser;
+      console.log(`Is Parent called 1: ${this.$store.getters.currentUser}`);
+      
+      if(currentUser){
+        console.log(`Is Parent called: ${this.$store.getters.currentUser.isPrimary}`);
+        return this.$store.getters.currentUser.isPrimary;
+      }
+      return false;
+    },
+    isLoading: function(){
+      console.log( `Loading: ${this.$store.getters.isLoading}`);
+      return this.$store.getters.isLoading;
     }
+  },
+  beforeCreate(){
+    this.$store.dispatch('loadFamily', [123200000, 123210000]);
+    
+    // // Hardcoded user set here. Pretend already authed
+    // this.$store.dispatch('updateCurrentUser', 123210000);
   }
 }
 </script>

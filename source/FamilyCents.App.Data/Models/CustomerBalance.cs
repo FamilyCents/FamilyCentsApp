@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FamilyCents.App.Data.FamilyAccounts
+namespace FamilyCents.App.Data.Models
 {
   public sealed class CustomerBalance : ICustomerScoped
   {

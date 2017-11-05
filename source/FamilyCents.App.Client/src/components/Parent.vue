@@ -1,22 +1,28 @@
 <template>
   <div class="parent">
-    <h1>The parent's view</h1>
-    <TaskList></TaskList>
+      <div>
+        <ul>
+          <li v-for="(child, index) in children" :key="index">
+            <router-link :to="`/account/${child.customerId}`" >{{child.name}}</router-link>      
+          </li>
+        </ul>
+    </div>
+    <!-- <TaskList></TaskList> -->
   </div>
 </template>
 
 <script>
 
-import TaskList from './TaskList';
-
 export default {
   name: 'Parent',
-  components: {
-    TaskList
-  },
-  data () {
-    return {
-      name: 'John Johnson'
+
+  // data () {
+  //   return {
+  //   }
+  // },
+  computed: {
+    children() {
+      return this.$store.getters.family.filter(m => !m.IsPrimary);
     }
   }
 }
