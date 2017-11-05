@@ -100,10 +100,10 @@ namespace FamilyCents.App.Api.Services
             .First()
             .ToDateTimeOffset())
         let tasksByMonth = customerCompletedTasks
-          .Where(t => t.WhenCompleted.Value.AddDays(90) > now)
+          .Where(t => t.WhenCompleted.Value.AddDays(30) > now)
           .ToLookup(t => t.WhenCompleted.Value.ToNextMonth())
         let virtualBills = customerTransactions.Transactions
-          .Where(t => t.ToDateTimeOffset().AddDays(90) > now)
+          .Where(t => t.ToDateTimeOffset().AddDays(30) > now)
           .GroupBy(t => t.ToDateTimeOffset().ToNextMonth())
           .Select(month =>
           {

@@ -31,7 +31,7 @@ namespace FamilyCents.App.Data.FamilyAccounts
       var now = DateTimeOffset.UtcNow;
 
       var purchases = accountTransactions.Single().CustomerTransactions.Single().Transactions
-        .Where(transaction => transaction.ToDateTimeOffset().AddDays(14) > now)
+        .Where(transaction => transaction.ToDateTimeOffset().AddDays(30) > now)
         .Cast<IAffectsBalance>();
       var payments = familyTasks
         .Where(task =>

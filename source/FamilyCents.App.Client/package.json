@@ -10,15 +10,12 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "element-ui": "^2.0.3",
-    "material-design-icons": "^3.0.1",
     "node-sass": "^4.6.0",
     "sass-loader": "^6.0.6",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^0.16.9",
-    "vuex": "^3.0.1",
-    "webfont": "^7.1.4"
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

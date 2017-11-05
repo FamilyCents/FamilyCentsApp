@@ -46,7 +46,12 @@ namespace FamilyCents.App.Data.Local
       return updatedTask;
     }
 
-    public async Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value)
+    public Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value)
+    {
+      return CreateTask(accountId, creator, description, value, DateTimeOffset.UtcNow, null);
+    }
+
+    public async Task<FamilyTask> CreateTask(int accountId, int creator, string description, decimal value, DateTimeOffset whenCreated, DateTimeOffset? whenCompleted)
     {
       var task = new FamilyTask
       {
@@ -55,11 +60,13 @@ namespace FamilyCents.App.Data.Local
         Description = description,
         Value = value,
         CreatedBy = creator,
-        WhenCreated = DateTimeOffset.UtcNow,
+        WhenCreated = whenCreated,
+        WhenCompleted = whenCompleted,
+        ApprovedBy = whenCompleted.HasValue ? (int?)creator : null
       };
 
       var result = await _db.CreateDocumentAsync(
-        UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyTasks"), 
+        UriFactory.CreateDocumentCollectionUri("FamilyCents", "FamilyTasks"),
         task);
 
       return task;
