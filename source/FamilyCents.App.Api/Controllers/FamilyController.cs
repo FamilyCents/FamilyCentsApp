@@ -7,6 +7,7 @@ using FamilyCents.App.Data.Apis;
 using FamilyCents.App.Data.Models;
 using FamilyCents.App.Api.Models;
 using FamilyCents.App.Data;
+using FamilyCents.App.Data.FamilyTasks;
 
 namespace FamilyCents.App.Api.Controllers
 {
@@ -15,16 +16,18 @@ namespace FamilyCents.App.Api.Controllers
     private readonly ICustomersApi _customersApi;
     private readonly IAccountsApi _accountsApi;
     private readonly ITransactionsApi _transactionsApi;
+    private readonly IFamilyTaskDb _familyTaskDb;
 
-    public FamilyController(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi)
+    public FamilyController(ICustomersApi customersApi, IAccountsApi accountsApi, ITransactionsApi transactionsApi, IFamilyTaskDb familyTaskDb)
     {
       _customersApi = customersApi;
       _accountsApi = accountsApi;
       _transactionsApi = transactionsApi;
+      _familyTaskDb = familyTaskDb;
     }
 
     [HttpGet]
-    public async Task<IActionResult> All(int accountId)
+    public async Task<IActionResult> Default(int accountId)
     {
       var fetchAccountDetails = _accountsApi.MakeRequestAsync(new AccountApiRequest { AccountId = accountId });
       var fetchAccountCustomers = _customersApi.MakeRequestAsync(new CustomerApiRequest { AccountId = accountId });
@@ -56,6 +59,7 @@ namespace FamilyCents.App.Api.Controllers
         let creditScore = rnd.Next(300, 850)
         select new FamilyMember
         {
+          CustomerId = customer.CustomerId,
           IsPrimary = account.PrimaryCustomerId == customer.CustomerId,
           Name = $"{customer.FirstName} {customer.LastName}",
           RecentTransactions = transactions,

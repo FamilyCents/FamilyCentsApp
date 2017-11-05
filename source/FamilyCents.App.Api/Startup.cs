@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using FamilyCents.App.Data.Apis;
+using FamilyCents.App.Data.FamilyTasks;
 
 namespace FamilyCents.App.Api
 {
@@ -26,7 +27,8 @@ namespace FamilyCents.App.Api
       services
         .AddSingleton<IAccountsApi, AccountsApi>()
         .AddSingleton<ITransactionsApi, TransactionsApi>()
-        .AddSingleton<ICustomersApi, CustomersApi>();
+        .AddSingleton<ICustomersApi, CustomersApi>()
+        .AddSingleton<IFamilyTaskDb, CosmosDbTaskDb>();
 
       services.AddMvc();
     }
@@ -38,9 +40,11 @@ namespace FamilyCents.App.Api
         app.UseDeveloperExceptionPage();
       }
 
-      app.UseMvc(options => options.MapRoute(
-        name: "default",
-        template: "api/{controller}/{action=Default}/{accountId:int}"));
+      app.UseMvc(options => {
+        options.MapRoute(
+          name: "default",
+          template: "api/{controller}/{accountId:int}/{action=Default}");
+      });
     }
   }
 }

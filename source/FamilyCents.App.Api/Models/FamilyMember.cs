@@ -7,6 +7,7 @@ namespace FamilyCents.App.Api.Models
 {
   public class FamilyMember
   {
+    public int CustomerId { get; set; }
     public string Name { get; set; }
     public decimal VirtualBalance { get; set; }
     public int VirtualCreditScore { get; set; }
